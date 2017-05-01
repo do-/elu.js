@@ -10,15 +10,6 @@ function redirect (url) {
     throw 'core.ok.redirect'
 }
 
-function setup_request () {
-
-    var parts = window.location.pathname.split ('/').filter (function (s) {return s > ' '});
-
-    $_REQUEST.type = parts [0]
-    $_REQUEST.id   = parts [1]
-
-}
-
 var $_SESSION = {
 
     get: function (key) {
@@ -72,6 +63,16 @@ function fire (f) {f ()}
 
 var use = {
     lib: function (name) {require ([name], fire)}
+}
+
+use.data = function (name) {
+        
+    require (['app/js/data/' + name], function (f) {
+    
+        f ()
+    
+    })
+               
 }
 
 use.block = function (name) {
@@ -138,9 +139,7 @@ function values (jq) {
 
 }
 
-function query (tia, data, done, fail) {
-
-    var url = sessionStorage.getItem ('dynamicRoot') + '/?';
+function dynamicURL (tia) {
 
     if ('type' in tia) {
         if (!tia.type) tia = {}    // empty request for keep-alive
@@ -151,7 +150,28 @@ function query (tia, data, done, fail) {
 
     if (tia.type && !('id' in tia) && $_REQUEST.id) tia.id = $_REQUEST.id
     
-    var headers = {};    
+    return sessionStorage.getItem ('dynamicRoot') + '/?' + $.param (tia)
+
+}
+
+function download (tia) {
+
+    var form = $('<form />').attr ({        
+        method : 'post',
+        enctype: 'text/plain',
+        action : dynamicURL (tia)
+    }).hide ().appendTo ($(document.body))
+
+    form [0].submit ()
+        
+    form.remove ()
+
+}
+
+function query (tia, data, done, fail) {
+    
+    var headers = {};
+    
     if ($_REQUEST._secret) {
         for (var i = 0; i < $_REQUEST._secret.length; i ++) {
             var name = $_REQUEST._secret [i]
@@ -161,7 +181,7 @@ function query (tia, data, done, fail) {
         delete $_REQUEST._secret
     }
 
-    $.ajax (url + $.param (tia), {
+    $.ajax (dynamicURL (tia), {
         dataType:    'json',
         method:      'POST',
         processData: false,
@@ -263,7 +283,10 @@ function fill (jq, data) {
     eachAttr (jq, 'data-key',    data, function (me, n, v) {me.text (me.text () + ' (' + n + ')'); me.attr ('data-hotkey', n)})
     eachAttr (jq, 'data-off',    data, function (me, n, v) {if (v) me.remove ()})
     eachAttr (jq, 'data-on',     data, function (me, n, v) {if (!v) me.remove ()})
-    eachAttr (jq, 'data-uri',    data, function (me, n, v) {me.attr ('data-href', v).find (':not(:has(*))').wrapInner ('<span class="anchor"/>')})
+    eachAttr (jq, 'data-uri',    data, function (me, n, v) {
+        var leaves = ':not(:has(*))'
+        me.attr ('data-href', v).find (leaves).addBack (leaves).wrapInner ('<span class="anchor"/>')
+    })
     eachAttr (jq, 'data-img',    data, function (me, n, v) {me.css ({'background-image': 'url(data:' + v + ')'}); me.attr ('data-image', n)})
     
     clickOn ($('span.anchor', jq), onDataUriDblClick)
@@ -298,9 +321,11 @@ function openTab (url, name) {
 };
 
 function onDataUriDblClick (e) {
-    var uri = $(this).closest('[data-href]').attr ('data-href')
+    var src = $(this).closest('[data-href]')
+    var uri = src.attr ('data-href')
     if (!uri) return
-    openTab (uri, uri)
+    var target = src.attr ('data-target')
+    openTab (uri, target ? target : uri)
 }
 
 function clickOn (jq, onClick, question) {
@@ -352,7 +377,7 @@ function refreshOpener () {
     try {window.opener.showIt ()} catch (e) {}
 }
 
-var Base64img = {
+var Base64file = {
 
     resize: function (img, dim, type, quality) {
 
@@ -389,7 +414,67 @@ var Base64img = {
 
         img.attr ({src: src})
 
-    }
+    },
+       
+    upload: function (file, o) {
+        
+        if (!o.portion) o.portion = 128 * 1024
+        
+        var data = o.data ? o.data : {}
+
+        data.label = file.name
+        data.type  = file.type
+        data.size  = file.size
+
+        query ({type: o.type, action: 'create', id: undefined}, {file: data}, function (id) {
+
+            var tia = {type: o.type, action: 'update', id: id}            
+            
+            var reader = new FileReader ()
+            
+            var isBusy = false
+        
+            reader.addEventListener ("load", function () {
+            
+                var s = reader.result
+                
+                isBusy = true
+                
+                query (tia, {chunk: s.substr (s.indexOf (','))}, function (data) {isBusy = false})                
+
+            }, false)                        
+                        
+            var start = 0
+            
+            var timer = setInterval (function () {
+
+                if (isBusy) return
+
+                if (reader.readyState == 1) return
+                
+                var end = start + o.portion
+                
+                if (end > file.size) end = file.size
+            
+                reader.readAsDataURL (file.slice (start, ++ end))
+                
+                start = end
+                
+                if (o.onprogress) o.onprogress (start - 1, file.size)
+                
+                if (start > file.size) {
+                
+                    clearInterval (timer)
+
+                    if (o.onloadend) o.onloadend ()
+
+                }
+                
+            }, 10)
+
+        })
+   
+    }   
 
 }
 
