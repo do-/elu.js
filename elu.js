@@ -81,11 +81,11 @@ use.block = function (name) {
 
     html.load (sessionStorage.getItem ('staticRoot') + '/app/html/' + name + '.html', function () {
         
-        require (['app/js/data/' + name], function (f) {
+        require (['app/data/' + name], function (f) {
             
             f (function (data) {
                 
-                require (['app/js/view/' + name], function (g) {
+                require (['app/view/' + name], function (g) {
 
                     g (data, html.children ())
                         
