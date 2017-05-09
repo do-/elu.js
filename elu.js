@@ -67,7 +67,7 @@ var use = {
 
 use.data = function (name) {
         
-    require (['app/js/data/' + name], function (f) {
+    require (['app/data/' + name], function (f) {
     
         f ()
     
