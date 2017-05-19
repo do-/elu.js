@@ -297,7 +297,7 @@ function fill (jq, data) {
 
     if (data._read_only) {    
     
-        $('input:text, input:password, textarea', jq).each (function () {
+        $('input:text, input[type=number], input:password, textarea', jq).each (function () {
             if (this.type == 'hidden') return
             var me = $(this)
             me.replaceWith ($('<span />').text (me.val ()))
