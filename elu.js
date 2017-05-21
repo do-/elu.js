@@ -232,6 +232,8 @@ function query (tia, data, done, fail) {
 
 function fill (jq, data, target) {
 
+    jq = jq.clone ()
+
     function eachAttr (jq, a, data, todo) {
 
         jq.find ('*').addBack ().filter ('[' + a + ']').each (function () {
