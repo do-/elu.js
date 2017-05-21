@@ -230,7 +230,7 @@ function query (tia, data, done, fail) {
 
 }
 
-function fill (jq, data) {
+function fill (jq, data, target) {
 
     function eachAttr (jq, a, data, todo) {
 
@@ -311,7 +311,9 @@ function fill (jq, data) {
     $('button[name]', jq).each (function () {
         $(this).click ($_DO [this.name + '_' + $_REQUEST.type])
     })
-            
+    
+    if (target) target.empty ().append (jq)
+
     return jq
 
 }
