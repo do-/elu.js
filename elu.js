@@ -308,6 +308,10 @@ function fill (jq, data) {
         
     }
 
+    $('button[name]', jq).each (function () {
+        $(this).click ($_DO [this.name + '_' + $_REQUEST.type])
+    })
+            
     return jq
 
 }
