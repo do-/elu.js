@@ -159,6 +159,7 @@ function download (tia) {
     var form = $('<form />').attr ({        
         method : 'post',
         enctype: 'text/plain',
+        target : 'invisible',
         action : dynamicURL (tia)
     }).hide ().appendTo ($(document.body))
 
@@ -186,7 +187,7 @@ function query (tia, data, done, fail) {
         method:      'POST',
         processData: false,
         contentType: 'application/json',
-        timeout:     1000,
+        timeout:     10000,
         data:        JSON.stringify (data),
         headers:     headers
     })
