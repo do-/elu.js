@@ -217,14 +217,30 @@ function query (tia, data, done, fail) {
             location.href = '/_maintenance/'
         } 
         else {
-            if (fail) return fail ()
+
             console.log (jqXHR, e)
+
             if (jqXHR.responseJSON && jqXHR.responseJSON.id) {
+
                 alert ('На сервере произошла ошибка. Запишите, пожалуйста, её номер для обращения в службу поддержки: ' + jqXHR.responseJSON.id)
+
             }
             else {
-                alert ('Error')
+            
+                if (fail) return fail (jqXHR, e)
+            
+                alert ('Не удалось получить ответ от сервера. ' + (
+                
+                    e == "timeout" ? 
+                        
+                        'Возможно, он перегружен либо имеют место проблемы с сетью. Пожалуйста, попробуйте обновить страницу или возобновить работу позже.' : 
+                        
+                        'Очень жаль.'
+                        
+                ))
+                    
             }
+            
         }    
     
     })
