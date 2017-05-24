@@ -312,7 +312,9 @@ function fill (jq, data, target) {
     }
 
     $('button[name]', jq).each (function () {
-        $(this).click ($_DO [this.name + '_' + $_REQUEST.type])
+        var handler = $_DO [this.name + '_' + $_REQUEST.type]
+        if (!handler) return
+        clickOn ($(this), handler)
     })
     
     if (target) target.empty ().append (jq)
