@@ -154,13 +154,17 @@ function dynamicURL (tia) {
 
 }
 
-function download (tia) {
+function download (tia, data) {
+
+    var url = dynamicURL (tia)
+    
+    if (data) url += '&' + $.param (data)
 
     var form = $('<form />').attr ({        
         method : 'post',
         enctype: 'text/plain',
         target : 'invisible',
-        action : dynamicURL (tia)
+        action : url
     }).hide ().appendTo ($(document.body))
 
     form [0].submit ()
