@@ -330,6 +330,12 @@ function fill (jq, data, target) {
         $('input:radio', jq).remove ()
         
     }
+    
+    if (data._can) {
+        $('button[name]', jq).each (function () {
+            if (!data._can [this.name]) $(this).remove ()
+        })
+    }
 
     $('button[name]', jq).each (function () {
         var handler = $_DO [this.name + '_' + $_REQUEST.type]
