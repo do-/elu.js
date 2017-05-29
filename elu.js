@@ -314,13 +314,15 @@ function fill (jq, data, target) {
     eachAttr (jq, 'data-img',    data, function (me, n, v) {me.css ({'background-image': 'url(data:' + v + ')'}); me.attr ('data-image', n)})
     
     clickOn ($('span.anchor', jq), onDataUriDblClick)
+    
+    var textInputs = 'input:text, input[type=number], input:password, textarea'
 
-    $('input:text, input:password, textarea', jq).each (function () {$(this).val (data [this.name])})
+    $(textInputs, jq).each (function () {$(this).val (data [this.name])})
     $('input:radio', jq).each (function () {var me = $(this); me.prop ('checked', me.val () == data [this.name])})
 
     if (data._read_only) {    
     
-        $('input:text, input[type=number], input:password, textarea', jq).each (function () {
+        $(textInputs, jq).each (function () {
             if (this.type == 'hidden') return
             var me = $(this)
             me.replaceWith ($('<span />').text (me.val ()))
