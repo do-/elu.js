@@ -173,8 +173,19 @@ function download (tia, data) {
 
 }
 
+function showIt (e) {
+    use.block ($_REQUEST.type)
+    blockEvent (e)
+}
+
+var $_F5 = showIt
+
 function query (tia, data, done, fail) {
-    
+
+    if (!tia)  tia  = {}
+    if (!data) data = {}
+    if (!done) done = $_F5
+
     var headers = {};
     
     if ($_REQUEST._secret) {
@@ -406,11 +417,6 @@ function blockEvent (e) {
     e.stopImmediatePropagation ()
     e.stopPropagation ()
     return e
-}
-
-function showIt (e) {
-    use.block ($_REQUEST.type)
-    blockEvent (e)
 }
 
 function refreshOpener () {
