@@ -423,6 +423,23 @@ function refreshOpener () {
     try {window.opener.showIt ()} catch (e) {}
 }
 
+$_DO.route = function (type, action, launch) {
+
+    if ($.isArray (action)) {
+    
+        for (var i = 0; i < action.length; i ++) $_DO.route (type, action [i], launch)
+    
+    }
+    else {
+    
+        var theQuery = function () {query ({action: action})}
+
+        $_DO [action + '_' + type] = launch ? function () {launch (theQuery)} : theQuery
+
+    }
+
+}
+
 var Base64file = {
 
     resize: function (img, dim, type, quality) {
