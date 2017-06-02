@@ -67,36 +67,34 @@ var use = {
 
 use.data = function (name) {
         
-    require (['app/data/' + name], function (f) {
-    
-        f ()
-    
-    })
+    require (['app/data/' + name], fire)
                
+}
+
+use.view = function (name, data) {
+
+    require (['app/view/' + name], function (f) {
+        
+        var html = $('<span>')
+
+        html.load (sessionStorage.getItem ('staticRoot') + '/app/html/' + name + '.html', function () {
+        
+            f (data, html.children ())
+        
+        })
+
+    })
+
 }
 
 use.block = function (name) {
 
-    var html = $('<span>')
-
-    html.load (sessionStorage.getItem ('staticRoot') + '/app/html/' + name + '.html', function () {
-        
-        require (['app/data/' + name], function (f) {
-            
-            f (function (data) {
-                
-                require (['app/view/' + name], function (g) {
-
-                    g (data, html.children ())
-                        
-                })
-
-            })
-            
-        })
+    require (['app/data/' + name], function (f) {
+    
+        f (function (data) { use.view (name, data) })            
         
     })
-        
+    
 }
 
 function values (jq) {
@@ -178,7 +176,11 @@ function showIt (e) {
     blockEvent (e)
 }
 
-var $_F5 = showIt
+var $_F5 = function (data) {
+
+    use.view ($_REQUEST.type, data)
+
+}
 
 function query (tia, data, done, fail) {
 
