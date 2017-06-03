@@ -29,8 +29,13 @@ var $_SESSION = {
 
 }
 
-function setup_user () {    
-    $_USER = $_SESSION.get ('user');   
+function setup_user (u) {
+    if (u) {
+        $_SESSION.set ('user', $_USER = u)
+    }
+    else {
+        $_USER = $_SESSION.get ('user');   
+    }
 }
 
 function en_unplural (s) {
