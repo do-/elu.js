@@ -1,3 +1,67 @@
+// borrowed from https://github.com/henrya/js-jquery/blob/master/BinaryTransport/jquery.binarytransport.js
+
+ /**
+ *
+ * jquery.binarytransport.js
+ *
+ * @description. jQuery ajax transport for making binary data type requests.
+ * @version 1.0
+ * @author Henry Algus <henryalgus@gmail.com>
+ *
+ */
+
+(function($, undefined) {
+    "use strict";
+
+    // use this transport for "binary" data type
+    $.ajaxTransport("+binary", function(options, originalOptions, jqXHR) {
+        // check for conditions and support for blob / arraybuffer response type
+        if (window.FormData && ((options.dataType && (options.dataType == 'binary')) || (options.data && ((window.ArrayBuffer && options.data instanceof ArrayBuffer) || (window.Blob && options.data instanceof Blob))))) {
+            return {
+                // create new XMLHttpRequest
+                send: function(headers, callback) {
+                    // setup all variables
+                    var xhr = new XMLHttpRequest(),
+                        url = options.url,
+                        type = options.type,
+                        async = options.async || true,
+                        // blob or arraybuffer. Default is blob
+                        dataType = options.responseType || "blob",
+                        data = options.data || null,
+                        username = options.username || null,
+                        password = options.password || null;
+
+                    xhr.addEventListener('load', function() {
+                        var data = {};
+                        data[options.dataType] = xhr.response;
+                        // make callback and send data
+                        callback(xhr.status, xhr.statusText, data, xhr.getAllResponseHeaders());
+                    });
+                    xhr.addEventListener('error', function() {
+                        var data = {};
+                        data[options.dataType] = xhr.response;
+                        // make callback and send data
+                        callback(xhr.status, xhr.statusText, data, xhr.getAllResponseHeaders());
+                    });
+
+                    xhr.open(type, url, async, username, password);
+
+                    // setup custom headers
+                    for (var i in headers) {
+                        xhr.setRequestHeader(i, headers[i]);
+                    }
+
+                    xhr.responseType = dataType;
+                    xhr.send(data);
+                },
+                abort: function() {}
+            };
+        }
+    });
+})(window.jQuery);
+
+// elu.js 
+
 var $_REQUEST = {}, $_DO = {nothing: function () {}}, $_USER
 
 function darn (o) {
@@ -159,20 +223,44 @@ function dynamicURL (tia) {
 
 function download (tia, data) {
 
-    var url = dynamicURL (tia)
-    
-    if (data) url += '&' + $.param (data)
+    $.ajax (dynamicURL (tia), {
+        dataType:    'binary',
+        method:      'POST',
+        processData: false,
+        contentType: 'application/json',
+        timeout:     10000,
+        data:        JSON.stringify (data)
+    })
 
-    var form = $('<form />').attr ({        
-        method : 'post',
-        enctype: 'text/plain',
-        target : 'invisible',
-        action : url
-    }).hide ().appendTo ($(document.body))
-
-    form [0].submit ()
+    .done (function (data, textStatus, jqXHR) {
         
-    form.remove ()
+        var fn = '1.bin';
+    
+        var cd = jqXHR.getResponseHeader ('Content-Disposition')
+        
+        var pre = 'attachment;filename='
+        var prelen = pre.length
+        
+        if (cd && cd.substr (0, prelen) == pre) fn = cd.substr (prelen)
+        
+        var a = $('<a>').attr ({download: fn})
+        
+        var reader = new FileReader ();
+
+        reader.addEventListener ("load", function () {
+        
+            a.attr ({href: reader.result}).get (0).click ()
+
+        }, false);
+
+        reader.readAsDataURL (data);
+    
+    })
+    .fail (function (jqXHR, e) {
+
+        alert ('Загрузить файл не удалось. ' + (e == 'error' ? 'На сервере произошла ошибка' : 'Похоже, сервер оказался недоступен.'))
+
+    })
 
 }
 
