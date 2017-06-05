@@ -93,6 +93,26 @@ var $_SESSION = {
     
     keepAlive: function () {
         query ({type: undefined}, {}, $.noop, $.noop)
+    },
+    
+    beforeExpiry: function (todo) {
+
+        var keepAliveTimer;
+
+        $(document).ajaxSuccess (function (event, request, settings) {
+
+            var timeout = sessionStorage.getItem ('timeout')
+
+            if (!timeout) return
+
+            if (timeout < 1) timeout = 1
+
+            if (keepAliveTimer) clearTimeout (keepAliveTimer)
+
+            keepAliveTimer = setTimeout (todo, 1000 * (60 * timeout - 1))
+
+        });    
+
     }
 
 }
