@@ -62,7 +62,7 @@
 
 // elu.js 
 
-var $_REQUEST = {}, $_DO = {}, $_USER
+var $_REQUEST = {}, $_DO = {}
 
 function darn (o) {
     if (console) console.log (o)
@@ -113,18 +113,19 @@ var $_SESSION = {
 
         });    
 
+    },
+    
+    start: function (user, timeout) {
+    
+        $_SESSION.set ('user', $_USER = user)
+        
+        if (timeout) $_SESSION.set ('timeout', timeout < 1 ? 1 : timeout)
+
     }
 
 }
 
-function setup_user (u) {
-    if (u) {
-        $_SESSION.set ('user', $_USER = u)
-    }
-    else {
-        $_USER = $_SESSION.get ('user');   
-    }
-}
+var $_USER = $_SESSION.get ('user');
 
 function en_unplural (s) {
 
