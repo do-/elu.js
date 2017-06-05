@@ -62,7 +62,7 @@
 
 // elu.js 
 
-var $_REQUEST = {}, $_DO = {nothing: function () {}}, $_USER
+var $_REQUEST = {}, $_DO = {}, $_USER
 
 function darn (o) {
     if (console) console.log (o)
@@ -89,6 +89,10 @@ var $_SESSION = {
     
     set: function (key, object) {
         sessionStorage.setItem (key, JSON.stringify (object))
+    },
+    
+    keepAlive: function () {
+        query ({type: undefined}, {}, $.noop, $.noop)
     }
 
 }
