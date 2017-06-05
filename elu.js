@@ -183,11 +183,25 @@ use.view = function (name, data) {
 
 use.block = function (name) {
 
-    require (['app/data/' + name], function (f) {
+    try {
+
+        require (['app/data/' + name], function (f) {
+
+            f (function (data) { use.view (name, data) })            
+
+        })
     
-        f (function (data) { use.view (name, data) })            
+    }
+    catch (e) {
+    
+        if ((typeof e === 'string' || e instanceof String) && e.match (/^core\.ok\./)) {
+            // do nothing
+        }
+        else {
+            darn (e)
+        }
         
-    })
+    }    
     
 }
 
