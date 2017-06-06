@@ -496,13 +496,91 @@ function fill (jq, data, target) {
 
 }
 
+function click (a) {
+    var e = window.document.createEvent ("MouseEvents");
+    e.initMouseEvent ("click", true, true, window, 0, 0, 0, 0, 0, false, false, false, false, 0, null);
+    a.dispatchEvent (e);
+}
+
+String.prototype.saveAs = function (name, type) {
+    
+    if (!type) type = 'application/octet-stream'
+    
+    if (window.navigator.msSaveOrOpenBlob) {
+    
+        var blobObject = new Blob ([this], {type: type})
+        
+        window.navigator.msSaveOrOpenBlob (blobObject, name)
+    
+    }
+    else {
+    
+        click ($('<a />').attr ({
+            download: name,
+            href: 'data:' + type + ',' + encodeURIComponent (this)
+        }).get (0))
+    
+    }
+           
+}
+
+function xmlDoc (data, name) {
+
+    if (!name) name = 'data'
+
+    var doc = document.implementation.createDocument (null, name, null)
+            
+    function append (element, name, content) {
+        var e = document.createElementNS (null, name)
+        objectToElement (content, e)
+        element.appendChild (e)
+    }
+
+    function objectToElement (o, el) {
+    
+        for (var k in o) {
+        
+            var v = o [k]; if (v == null) continue
+            
+            if      ($.isArray (v))         { for (var i = 0; i < v.length; i ++) append (el, en_unplural (k), v [i]) }
+            else if (typeof v === "object") { append (el, k, v)      }
+            else                            { el.setAttribute (k, v) }            
+            
+        }
+        
+    }
+
+    objectToElement (data, doc.documentElement)
+
+    return doc
+
+}
+
+function xslTransform (doc, done, name) {
+
+    if (!name) name = $_REQUEST.type
+
+    $.get (sessionStorage.getItem ('staticRoot') + '/app/xslt/' + name + '.xsl', function (responseText) {
+
+        var xsltProcessor = new XSLTProcessor ();
+
+        xsltProcessor.importStylesheet ($.parseXML (responseText))
+
+        var s = (new XMLSerializer ()).serializeToString (xsltProcessor.transformToDocument (doc))
+
+        if (s.substr (0, 5) != '<?xml') s = '<?xml version="1.0"?>' + s
+
+        done (s)
+
+    })
+
+}
+
 function openTab (url, name) {
     var a    = window.document.createElement ("a");
     a.target = name;
     a.href   = url;
-    var e    = window.document.createEvent("MouseEvents");
-    e.initMouseEvent ("click", true, true, window, 0, 0, 0, 0, 0, false, false, false, false, 0, null);
-    a.dispatchEvent  (e);
+    click (a)
 };
 
 function onDataUriDblClick (e) {
