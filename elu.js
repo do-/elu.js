@@ -280,8 +280,8 @@ function download (tia, data) {
         var pre = 'attachment;filename='
         var prelen = pre.length
         
-        if (cd && cd.substr (0, prelen) == pre) fn = cd.substr (prelen)
-        
+        if (cd && cd.substr (0, prelen) == pre) fn = decodeURIComponent (cd.substr (prelen))
+
         var a = $('<a>').attr ({download: fn})
         
         var reader = new FileReader ();
