@@ -282,18 +282,8 @@ function download (tia, data) {
         
         if (cd && cd.substr (0, prelen) == pre) fn = decodeURIComponent (cd.substr (prelen))
 
-        var a = $('<a>').attr ({download: fn})
-        
-        var reader = new FileReader ();
+        data.saveAs (fn);
 
-        reader.addEventListener ("load", function () {
-        
-            a.attr ({href: reader.result}).get (0).click ()
-
-        }, false);
-
-        reader.readAsDataURL (data);
-    
     })
     .fail (function (jqXHR, e) {
 
@@ -502,26 +492,35 @@ function click (a) {
     a.dispatchEvent (e);
 }
 
+Blob.prototype.saveAs = function (name) {
+        
+    if (window.navigator.msSaveOrOpenBlob) {
+            
+        window.navigator.msSaveOrOpenBlob (this, name)
+    
+    }
+    else {
+
+        var reader = new FileReader ();
+
+        reader.addEventListener ("load", function () {
+        
+            click ($('<a />').attr ({download: name, href: reader.result}).get (0))
+
+        }, false);
+
+        reader.readAsDataURL (this);
+    
+    }
+
+}
+
 String.prototype.saveAs = function (name, type) {
     
     if (!type) type = 'application/octet-stream'
     
-    if (window.navigator.msSaveOrOpenBlob) {
-    
-        var blobObject = new Blob ([this], {type: type})
-        
-        window.navigator.msSaveOrOpenBlob (blobObject, name)
-    
-    }
-    else {
-    
-        click ($('<a />').attr ({
-            download: name,
-            href: 'data:' + type + ',' + encodeURIComponent (this)
-        }).get (0))
-    
-    }
-           
+    new Blob ([this], {type: type}).saveAs (name)
+
 }
 
 function xmlDoc (data, name) {
