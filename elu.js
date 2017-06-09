@@ -226,7 +226,9 @@ function values (jq) {
         throw 'core.ok.validation_error'
     })
 
-    var form = jq.clone ().wrap ('<form/>').parent ()
+    var form = jq.prop ("tagName") == 'FORM' ? jq : $('form', jq)
+    
+    if (!form.length) form = jq.clone ().wrap ('<form/>').parent ()
     
     var a = form.serializeArray ()
         
