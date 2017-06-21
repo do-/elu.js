@@ -62,7 +62,7 @@
 
 // elu.js 
 
-var $_REQUEST = {}, $_DO = {}
+var $_REQUEST = {}, $_DO = {}, $_DRAW = {}
 
 function darn (o) {
     if (console) console.log (o)
