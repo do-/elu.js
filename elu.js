@@ -439,6 +439,7 @@ function fill (jq, data, target) {
     
     eachAttr (jq, 'data-text',   data, function (me, n, v) {me.text (v)})
     eachAttr (jq, 'data-id-field', data, function (me, n, v) {me.attr ('data-id', v)})
+    eachAttr (jq, 'data-for',    data, function (me, n, v) {me.attr ('for', v)})
     eachAttr (jq, 'data-value',  data, function (me, n, v) {me.val (v)})
     eachAttr (jq, 'data-class',  data, function (me, n, v) {me.addClass (v)})
     eachAttr (jq, 'data-key',    data, function (me, n, v) {me.text (me.text () + ' (' + n + ')'); me.attr ('data-hotkey', n)})
