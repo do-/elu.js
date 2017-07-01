@@ -173,7 +173,7 @@ use.view = function (name, data) {
 
         html.load (sessionStorage.getItem ('staticRoot') + '/app/html/' + name + '.html', function () {
         
-            f (data, html.children ())
+            f (data, html.children ().attr ('data-block-name', name))
         
         })
 
@@ -475,9 +475,8 @@ function fill (jq, data, target) {
             if (!data._can [this.name]) $(this).remove ()
         })
     }
-
     $('button[name]', jq).each (function () {
-        var handler = $_DO [this.name + '_' + $_REQUEST.type]
+        var handler = $_DO [this.name + '_' + jq.attr ('data-block-name')]
         if (!handler) return
         clickOn ($(this), handler)
     })
