@@ -62,7 +62,7 @@
 
 // elu.js 
 
-var $_REQUEST = {}, $_DO = {}
+var $_REQUEST = {}, $_DO = {}, $_DRAW = {}
 
 function darn (o) {
     if (console) console.log (o)
@@ -439,6 +439,7 @@ function fill (jq, data, target) {
     
     eachAttr (jq, 'data-text',   data, function (me, n, v) {me.text (v)})
     eachAttr (jq, 'data-id-field', data, function (me, n, v) {me.attr ('data-id', v)})
+    eachAttr (jq, 'data-for',    data, function (me, n, v) {me.attr ('for', v)})
     eachAttr (jq, 'data-value',  data, function (me, n, v) {me.val (v)})
     eachAttr (jq, 'data-class',  data, function (me, n, v) {me.addClass (v)})
     eachAttr (jq, 'data-key',    data, function (me, n, v) {me.text (me.text () + ' (' + n + ')'); me.attr ('data-hotkey', n)})
@@ -452,7 +453,7 @@ function fill (jq, data, target) {
     
     clickOn ($('span.anchor', jq), onDataUriDblClick)
     
-    var textInputs = 'input:text, input[type=number], input:password, textarea'
+    var textInputs = 'input:text, input[type=number], input:password, textarea, select'
 
     $(textInputs, jq).each (function () {$(this).val (data [this.name])})
     $('input:radio', jq).each (function () {var me = $(this); me.prop ('checked', me.val () == data [this.name])})
