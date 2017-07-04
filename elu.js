@@ -420,7 +420,7 @@ function fill (jq, data, target) {
     eachAttr (jq, 'data-list',   data, function (me, n, v) {
     
         if (!v) {
-            console.log ('Empty value as data-list in ' + me.get(0).outerHTML)
+            console.log ('Empty value as data-list in ' + me.get(0).outerHTML, data, n)
             me.remove ()
             return
         }
@@ -477,9 +477,40 @@ function fill (jq, data, target) {
         })
     }
     $('button[name]', jq).each (function () {
+    
         var handler = $_DO [this.name + '_' + jq.attr ('data-block-name')]
+    
         if (!handler) return
-        clickOn ($(this), handler)
+    
+        clickOn ($(this), function () {
+            
+            try { handler () }
+            
+            catch (e) {
+
+                if (typeof e === 'string' || e instanceof String) {
+                
+                    if (e.match (/^core\.ok\./)) {
+                        // do nothing
+                    }
+                    else {                            
+                        var m = /^#(.*?)#:(.*)/.exec (e)
+                        if (m) {
+                            $('*[name=' + m [1] + ']').focus ()
+                            alert (m [2])
+                        }
+                        else throw e
+                    }
+                
+                }
+                else {
+                    throw e
+                }
+            
+            }        
+        
+        })
+        
     })
     
     if (target) target.empty ().append (jq)
