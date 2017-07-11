@@ -514,6 +514,8 @@ function fill (jq, data, target) {
         
     })
     
+    jq.data ('data', data)
+    
     if (target) target.empty ().append (jq)
 
     return jq
