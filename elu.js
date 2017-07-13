@@ -172,8 +172,12 @@ use.view = function (name, data) {
         var html = $('<span>')
 
         html.load (sessionStorage.getItem ('staticRoot') + '/app/html/' + name + '.html', function () {
+            
+            var tmp = html.children ()
+            
+            $('*', tmp).attr ('data-block-name', name)
         
-            f (data, html.children ().attr ('data-block-name', name))
+            f (data, tmp)
         
         })
 
