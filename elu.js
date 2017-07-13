@@ -483,11 +483,13 @@ function fill (jq, data, target) {
     }
     $('button[name]', jq).each (function () {
     
-        var handler = $_DO [this.name + '_' + jq.attr ('data-block-name')]
+        var $this = $(this)
     
+        var handler = $_DO [this.name + '_' + $this.attr ('data-block-name')]
+
         if (!handler) return
     
-        clickOn ($(this), function () {
+        clickOn ($this, function () {
             
             try { handler () }
             
@@ -554,6 +556,24 @@ Blob.prototype.saveAs = function (name) {
     }
 
 }
+
+$.fn.saveAsXLS = function (name) {
+
+    if (!name) name = $('title').text ()
+    
+    name += '.xls';
+    
+    $('th, td', this).each (function () {
+        
+        var $this = $(this)
+            
+        if ($this.css ('display') == 'none') $this.remove ()
+            
+    });
+
+    ('<html><body><table border>' + this.html () + '</table></body></html>').saveAs (name)
+
+};
 
 String.prototype.saveAs = function (name, type) {
     
