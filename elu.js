@@ -557,7 +557,9 @@ Blob.prototype.saveAs = function (name) {
 
 }
 
-$.fn.slideAsNeeded = function (was, is, o) {
+$.fn.slideAsNeeded = function (is, o) {
+
+    var was = this.css ('display') == 'block'
 
     if (!was && is) this.slideDown (o)
     if (was && !is) this.slideUp   (o)
