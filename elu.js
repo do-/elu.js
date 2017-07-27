@@ -310,6 +310,63 @@ var $_F5 = function (data) {
 
 }
 
+$_DO.apologize = function (o, fail) {
+    
+    if (fail) return fail (o)
+    
+    if (o.data) {
+        var data = o.data
+        if (o.field) o.field.focus ()
+        if (data.message) alert (data.message)
+        return
+    }
+    
+    if (o.jqXHR) {
+    
+        var jqXHR = o.jqXHR
+        var e = o.error
+
+        if (jqXHR.status == 401) {
+            sessionStorage.clear ()
+            location.reload ()
+        } 
+        else if (jqXHR.status == 413) {
+            alert ('Вы пытаетесь передать слишком большой объём данных: вероятно, файл недопустимой величины')
+        } 
+        else if (jqXHR.status == 504) {
+            location.href = '/_maintenance/'
+        } 
+        else {
+
+            console.log (jqXHR, e)
+
+            if (jqXHR.responseJSON && jqXHR.responseJSON.id) {
+
+                alert ('На сервере произошла ошибка. Запишите, пожалуйста, её номер для обращения в службу поддержки: ' + jqXHR.responseJSON.id)
+
+            }
+            else {
+            
+                if (fail) return fail (o)
+            
+                alert ('Не удалось получить ответ от сервера.' + (
+                
+                    e == "timeout" ? 
+                        
+                        ' Возможно, он перегружен либо имеют место проблемы с сетью. Пожалуйста, попробуйте обновить страницу или возобновить работу позже.' : 
+                        
+                        ''
+                        
+                ))
+                    
+            }
+            
+        }    
+    
+    }
+
+}
+
 function query (tia, data, done, fail) {
 
     if (!tia)  tia  = {}
@@ -339,55 +396,20 @@ function query (tia, data, done, fail) {
 
     .done (function (data) {
         
-        if (!data.success) {
-            if (data.field) $('input[name=' + data.field + ']').focus ()
-            if (data.message) alert (data.message)
-        }
-        else {
-            done (data.content)
-        }
-    
+        if (data.success) return done (data.content)
+        
+        var o = {data: data}
+        
+        if (data.field) o.field = $('[name=' + data.field + ']')
+        
+        $_DO.apologize (o, fail)
+
     })
     
     .fail (function (jqXHR, e) {
 
-        if (jqXHR.status == 401) {
-            sessionStorage.clear ()
-            location.reload ()
-        } 
-        else if (jqXHR.status == 413) {
-            alert ('Вы пытаетесь передать слишком большой объём данных: вероятно, файл недопустимой величины')
-        } 
-        else if (jqXHR.status == 504) {
-            location.href = '/_maintenance/'
-        } 
-        else {
+            $_DO.apologize ({jqXHR: jqXHR, error: e}, fail)
 
-            console.log (jqXHR, e)
-
-            if (jqXHR.responseJSON && jqXHR.responseJSON.id) {
-
-                alert ('На сервере произошла ошибка. Запишите, пожалуйста, её номер для обращения в службу поддержки: ' + jqXHR.responseJSON.id)
-
-            }
-            else {
-            
-                if (fail) return fail (jqXHR, e)
-            
-                alert ('Не удалось получить ответ от сервера. ' + (
-                
-                    e == "timeout" ? 
-                        
-                        'Возможно, он перегружен либо имеют место проблемы с сетью. Пожалуйста, попробуйте обновить страницу или возобновить работу позже.' : 
-                        
-                        'Очень жаль.'
-                        
-                ))
-                    
-            }
-            
-        }    
-    
     })
 
 }
