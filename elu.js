@@ -480,7 +480,7 @@ function fill (jq, data, target) {
     
     clickOn ($('span.anchor', jq), onDataUriDblClick)
     
-    var textInputs = 'input:text, input[type=number], input:password, textarea, select'
+    var textInputs = 'input:text, input[type=number], input[type=range], input:password, textarea, select'
 
     $(textInputs, jq).each (function () {$(this).val (data [this.name])})
     $('input:radio', jq).each (function () {var me = $(this); me.prop ('checked', me.val () == data [this.name])})
