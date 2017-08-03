@@ -246,6 +246,10 @@ function values (jq) {
     $('select', jq).each (function () {
         o[this.name] = $(this).val ()
     })
+
+    $('input[type=checkbox]', jq).each (function () {
+        o[this.name] = $(this).prop ('checked') ? 1 : 0
+    })
     
     return o
 
