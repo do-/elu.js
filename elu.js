@@ -802,6 +802,10 @@ var Base64file = {
             var reader = new FileReader ()
             
             var isBusy = false
+            
+            var start = 0
+                        
+            var timer;
         
             reader.addEventListener ("load", function () {
             
@@ -809,13 +813,25 @@ var Base64file = {
                 
                 isBusy = true
                 
-                query (tia, {chunk: s.substr (s.indexOf (','))}, function (data) {isBusy = false})                
+                query (tia, {chunk: s.substr (s.indexOf (','))}, function (data) {
+                    
+                    isBusy = false
+                    
+                    if (o.onprogress) o.onprogress (start - 1, file.size)
+
+                    if (start > file.size) {
+
+                        clearInterval (timer)
+
+                        if (o.onloadend) o.onloadend ()
+
+                    }
+
+                })
 
             }, false)                        
                         
-            var start = 0
-            
-            var timer = setInterval (function () {
+            timer = setInterval (function () {
 
                 if (isBusy) return
 
@@ -828,17 +844,7 @@ var Base64file = {
                 reader.readAsDataURL (file.slice (start, ++ end))
                 
                 start = end
-                
-                if (o.onprogress) o.onprogress (start - 1, file.size)
-                
-                if (start > file.size) {
-                
-                    clearInterval (timer)
-
-                    if (o.onloadend) o.onloadend ()
-
-                }
-                
+                                
             }, 10)
 
         })
