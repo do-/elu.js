@@ -79,7 +79,7 @@ var $_SESSION = {
     get: function (key) {
 
         try {
-            return JSON.parse (sessionStorage.getItem (key))
+            return JSON.parse (localStorage.getItem (key))
         }
         catch (e) {
             console.log (e)
@@ -88,7 +88,7 @@ var $_SESSION = {
     },
     
     set: function (key, object) {
-        sessionStorage.setItem (key, JSON.stringify (object))
+        localStorage.setItem (key, JSON.stringify (object))
     },
     
     keepAlive: function () {
@@ -121,10 +121,35 @@ var $_SESSION = {
         
         if (timeout) $_SESSION.set ('timeout', timeout < 1 ? 1 : timeout)
 
+    },
+    
+    end: function () {
+    
+        window.__LOGOUT__ = 1
+    
+        localStorage.removeItem ('user')
+
+    },
+    
+    closeAllOnLogout: function (e) { 
+
+        if (e.key != 'user' || window.__LOGOUT__ || e.newValue) return
+
+        $('body').text ('')
+
+        try {
+            window.close ()
+        }
+        catch (e) {
+            darn (e)
+        }
+
+        window.location = 'about:blank'
+
     }
 
 }
-
+        
 var $_USER = $_SESSION.get ('user');
 
 function en_unplural (s) {
@@ -331,7 +356,7 @@ $_DO.apologize = function (o, fail) {
         var e = o.error
 
         if (jqXHR.status == 401) {
-            sessionStorage.clear ()
+            localStorage.removeItem ('user')
             location.reload ()
         } 
         else if (jqXHR.status == 413) {
