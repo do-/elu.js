@@ -79,7 +79,7 @@ var $_SESSION = {
     get: function (key) {
 
         try {
-            return JSON.parse (localStorage.getItem (key))
+            return JSON.parse (sessionStorage.getItem (key))
         }
         catch (e) {
             console.log (e)
@@ -88,9 +88,9 @@ var $_SESSION = {
     },
     
     set: function (key, object) {
-        localStorage.setItem (key, JSON.stringify (object))
+        sessionStorage.setItem (key, JSON.stringify (object))
     },
-    
+
     keepAlive: function () {
         query ({type: undefined}, {}, $.noop, $.noop)
     },
@@ -119,6 +119,8 @@ var $_SESSION = {
     
         $_SESSION.set ('user', $_USER = user)
         
+        localStorage.setItem ('user', 1)
+        
         if (timeout) $_SESSION.set ('timeout', timeout < 1 ? 1 : timeout)
 
     },
@@ -126,6 +128,8 @@ var $_SESSION = {
     end: function () {
     
         window.__LOGOUT__ = 1
+        
+        sessionStorage.clear ()
     
         localStorage.removeItem ('user')
 
