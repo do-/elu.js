@@ -700,6 +700,7 @@ function xslTransform (doc, done, name) {
 }
 
 function openTab (url, name) {
+    if (!name) name = url
     var a    = window.document.createElement ("a");
     a.target = name;
     a.href   = url;
