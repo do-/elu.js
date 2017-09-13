@@ -505,6 +505,7 @@ function fill (jq, data, target) {
     eachAttr (jq, 'data-key',    data, function (me, n, v) {me.text (me.text () + ' (' + n + ')'); me.attr ('data-hotkey', n)})
     eachAttr (jq, 'data-off',    data, function (me, n, v) {if (v) me.remove ()})
     eachAttr (jq, 'data-on',     data, function (me, n, v) {if (!v) me.remove ()})
+    eachAttr (jq, 'data-roles',  data, function (me, n, v) {if (n.split (/\W/).indexOf ($_USER.role) < 0) me.remove ()})
     eachAttr (jq, 'data-uri',    data, function (me, n, v) {
         var leaves = ':not(:has(*))'
         me.attr ('data-href', v).find (leaves).addBack (leaves).wrapInner ('<span class="anchor"/>')
