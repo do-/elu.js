@@ -130,6 +130,8 @@ var $_SESSION = {
         window.__LOGOUT__ = 1
         
         sessionStorage.clear ()
+        
+        $_USER = undefined
     
         localStorage.removeItem ('user')
 
@@ -154,7 +156,16 @@ var $_SESSION = {
 
 }
         
-var $_USER = $_SESSION.get ('user');
+var $_USER
+
+if (opener) {
+    if (opener.$_USER) $_USER = JSON.parse (JSON.stringify (opener.$_USER))
+    darn (['got from opener', $_USER])
+}
+else {
+    $_USER = $_SESSION.get ('user')
+    darn (['got from sessionStore', $_USER])
+}
 
 function en_unplural (s) {
 
