@@ -372,6 +372,8 @@ $_DO.apologize = function (o, fail) {
 
         if (jqXHR.status == 401) {
             localStorage.removeItem ('user')
+            sessionStorage.removeItem ('user')
+            $_USER = undefined
             location.reload ()
         } 
         else if (jqXHR.status == 413) {
