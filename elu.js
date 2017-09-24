@@ -158,8 +158,8 @@ var $_SESSION = {
         
 var $_USER
 
-if (opener) {
-    if (opener.$_USER) $_USER = JSON.parse (JSON.stringify (opener.$_USER))
+if (opener && opener.$_USER) {
+    $_USER = JSON.parse (JSON.stringify (opener.$_USER))
     darn (['got from opener', $_USER])
 }
 else {
