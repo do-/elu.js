@@ -604,24 +604,30 @@ function click (a) {
 }
 
 Blob.prototype.saveAs = function (name) {
-        
+
     if (window.navigator.msSaveOrOpenBlob) {
-            
+
         window.navigator.msSaveOrOpenBlob (this, name)
-    
+
     }
     else {
 
-        var reader = new FileReader ();
+        var url = window.URL.createObjectURL (this)
 
-        reader.addEventListener ("load", function () {
+        var a = document.createElement ("a")
+
+        a.style    = "display: none"
+        a.href     = url
+        a.download = name
+
+        document.body.appendChild (a)
+
+        a.click ()
+
+        window.URL.revokeObjectURL (url)
         
-            click ($('<a />').attr ({download: name, href: reader.result}).get (0))
+        a.outerHTML = ''
 
-        }, false);
-
-        reader.readAsDataURL (this);
-    
     }
 
 }
@@ -656,7 +662,7 @@ $.fn.saveAsXLS = function (name) {
 String.prototype.saveAs = function (name, type) {
     
     if (!type) type = 'application/octet-stream'
-    
+
     new Blob ([this], {type: type}).saveAs (name)
 
 }
