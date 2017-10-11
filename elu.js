@@ -295,7 +295,7 @@ function values (jq) {
 
 }
 
-function dynamicURL (tia) {
+function dynamicURL (tia, postfix) {
 
     if ('type' in tia) {
         if (!tia.type) tia = {}    // empty request for keep-alive
@@ -306,7 +306,7 @@ function dynamicURL (tia) {
 
     if (tia.type && !('id' in tia) && $_REQUEST.id) tia.id = $_REQUEST.id
     
-    return sessionStorage.getItem ('dynamicRoot') + '/?' + $.param (tia)
+    return sessionStorage.getItem ('dynamicRoot') + (postfix || '') + '/?' + $.param (tia)
 
 }
 
@@ -410,6 +410,20 @@ $_DO.apologize = function (o, fail) {
         }    
     
     }
+
+}
+
+function jerk (tia, data, then) {
+
+    $.ajax (dynamicURL (tia || {}, '/_slow'), {
+        dataType:    'json',
+        method:      'POST',
+        processData: false,
+        contentType: 'application/json',
+        timeout:     10,
+        data:        JSON.stringify (data || {}),
+        headers:     {},
+    }).always (then)
 
 }
 
