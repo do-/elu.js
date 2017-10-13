@@ -699,6 +699,8 @@ function xmlDoc (data, name) {
         
             var v = o [k]; if (v == null) continue
             
+            if (/^[^A-Z]/i.test (k)) k = 'a-' + k
+            
             if      ($.isArray (v))         { for (var i = 0; i < v.length; i ++) append (el, en_unplural (k), v [i]) }
             else if (typeof v === "object") { append (el, k, v)      }
             else                            { el.setAttribute (k, v) }            
