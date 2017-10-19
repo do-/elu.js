@@ -523,7 +523,18 @@ function fill (jq, data, target) {
         
     })
     
-    eachAttr (jq, 'data-text',   data, function (me, n, v) {me.text (v)})
+    eachAttr (jq, 'data-text',   data, function (me, n, v) {
+    
+        if (v == null) v = me.attr ('data-default') || ''
+        
+        var dig = me.attr ('data-digits')
+        
+        if (dig != null) v = $.isNumeric (v) ? new Number (v).toLocaleString ([], {minimumFractionDigits: dig, maximumFractionDigits: dig}) : ''
+        
+        me.text (v)
+        
+    })
+    
     eachAttr (jq, 'data-id-field', data, function (me, n, v) {me.attr ('data-id', v)})
     eachAttr (jq, 'data-name',   data, function (me, n, v) {me.attr ('name', v)})
     eachAttr (jq, 'data-for',    data, function (me, n, v) {me.attr ('for', v)})
