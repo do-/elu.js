@@ -823,6 +823,28 @@ $_DO.route = function (type, action, launch) {
 
 }
 
+function wait (o) {
+
+    o.interval |= 100
+
+    var isBusy = false
+    
+    var t = setInterval (function () {
+    
+        if (isBusy) return
+        
+        isBusy = true
+        
+        if (!o.until ()) return (isBusy = false)
+        
+        clearInterval (t)
+        
+        if (o.then) o.then ()
+
+    }, o.interval)
+
+}
+
 var Base64file = {
 
     resize: function (img, dim, type, quality) {
