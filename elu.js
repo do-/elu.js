@@ -211,7 +211,7 @@ use.view = function (name, data) {
         
         var html = $('<span>')
 
-        html.load (sessionStorage.getItem ('staticRoot') + '/app/html/' + name + '.html', function () {
+        html.load (staticURL ('app/html/' + name + '.html'), function () {
             
             var tmp = html.children ()
             
@@ -294,6 +294,8 @@ function values (jq) {
     return o
 
 }
+
+function staticURL (path) {return sessionStorage.getItem ('staticRoot') + '/' + path}
 
 function dynamicURL (tia, postfix) {
 
@@ -730,7 +732,7 @@ function xslTransform (doc, done, name) {
 
     if (!name) name = $_REQUEST.type
 
-    $.get (sessionStorage.getItem ('staticRoot') + '/app/xslt/' + name + '.xsl', function (responseText) {
+    $.get (staticURL ('app/xslt/' + name + '.xsl'), function (responseText) {
 
         var xsltProcessor = new XSLTProcessor ();
 
