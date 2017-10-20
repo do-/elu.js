@@ -531,7 +531,37 @@ function fill (jq, data, target) {
         
         var dig = me.attr ('data-digits')
         
-        if (dig != null) v = $.isNumeric (v) ? new Number (v).toLocaleString ([], {minimumFractionDigits: dig, maximumFractionDigits: dig}) : ''
+        if (dig != null) {
+        
+            v = $.isNumeric (v) ? new Number (v).toLocaleString ([], {minimumFractionDigits: dig, maximumFractionDigits: dig}) : ''
+            
+        }
+        else {
+
+            var dt = me.attr ('data-date')
+            
+            if (dt != null) {
+
+                var ymd = v.substr (0, 10).split (/\D+/)
+
+                if (ymd [2] > 31) ymd.reverse ()
+
+                v = new Date (ymd [0], ymd [1], ymd [2]).toLocaleDateString ([], dt.length ? JSON.parse (dt) : undefined)
+            
+            }
+            else {
+            
+                var ts = me.attr ('data-ts')
+
+                if (ts != null) {
+
+                    v = new Date (v).toLocaleString ([], ts.length ? JSON.parse (ts) : undefined)
+
+                }
+            
+            }
+
+        }
         
         me.text (v)
         
