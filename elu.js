@@ -615,9 +615,9 @@ function fill (jq, data, target) {
 
         if (!handler) return
     
-        clickOn ($this, function () {
+        clickOn ($this, function (event) {
             
-            try { handler () }
+            try { handler (event) }
             
             catch (e) {
 
