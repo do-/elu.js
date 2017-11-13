@@ -546,7 +546,7 @@ function fill (jq, data, target) {
 
                 if (ymd [2] > 31) ymd.reverse ()
 
-                v = new Date (ymd [0], ymd [1], ymd [2]).toLocaleDateString ([], dt.length ? JSON.parse (dt) : undefined)
+                v = new Date (ymd [0], ymd [1] - 1, ymd [2]).toLocaleDateString ([], dt.length ? JSON.parse (dt) : undefined)
             
             }
             else {
