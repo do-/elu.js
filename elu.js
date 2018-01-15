@@ -562,6 +562,7 @@ function fill (jq, data, target) {
     eachAttr (jq, 'data-on',     data, function (me, n, v) {if (!v) me.remove ()})
     eachAttr (jq, 'data-roles',  data, function (me, n, v) {if (n.split (/\W/).indexOf ($_USER.role) < 0) me.remove ()})
     eachAttr (jq, 'data-uri',    data, function (me, n, v) {
+        if (!v) return
         var leaves = ':not(:has(*))'
         me.attr ('data-href', v).find (leaves).addBack (leaves).wrapInner ('<span class="anchor"/>')
     })
