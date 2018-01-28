@@ -454,8 +454,21 @@ function query (tia, data, done, fail) {
     })
     
     .fail (function (jqXHR, e) {
+    
+        if (jqXHR.status == 422) {
+
+            var o = {data: jqXHR.responseJSON}
+
+            if (data.field) o.field = $('[name=' + data.field + ']')
+
+            $_DO.apologize (o, fail)
+
+        }
+        else {
 
             $_DO.apologize ({jqXHR: jqXHR, error: e}, fail)
+
+        }
 
     })
 
