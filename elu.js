@@ -295,6 +295,9 @@ function dynamicURL (tia, postfix) {
 
 function download (tia, data, o) {
 
+    if (!data) data = {}
+    if (!o)       o = {}
+
     o.dataType    = 'binary'
     o.method      = 'POST'
     o.processData = false
