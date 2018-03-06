@@ -714,7 +714,7 @@ $.fn.saveAsXLS = function (name) {
             
     });
 
-    ('<html><body><table border>' + this.html () + '</table></body></html>').saveAs (name)
+    ('<html><head><meta charset=utf-8></head><body><table border>' + this.html () + '</table></body></html>').saveAs (name)
 
 };
 
