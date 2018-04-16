@@ -568,6 +568,7 @@ function fill (jq, data, target) {
         
     })
     
+    eachAttr (jq, 'data-html',   data, function (me, n, v) {me.html (v)})
     eachAttr (jq, 'data-id-field', data, function (me, n, v) {me.attr ('data-id', v)})
     eachAttr (jq, 'data-name',   data, function (me, n, v) {me.attr ('name', v)})
     eachAttr (jq, 'data-for',    data, function (me, n, v) {me.attr ('for', v)})
