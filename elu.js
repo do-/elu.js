@@ -480,6 +480,10 @@ function query (tia, data, done, fail) {
 
 }
 
+function refill (data, target) {
+    fill (target, data, target)
+}
+
 function fill (jq, data, target) {
 
     jq = jq.clone ()
@@ -491,7 +495,7 @@ function fill (jq, data, target) {
             var name = me.attr (a)
             var names = name.split ('.')
             if (names.length == 1) {
-                todo (me.removeAttr (a), name, data [name])
+                todo (me, name, data [name])
             }
             else {
                 var d = data
@@ -501,7 +505,7 @@ function fill (jq, data, target) {
                     d = ''
                     break
                 }
-                todo (me.removeAttr (a), name, d)
+                todo (me, name, d)
             }
         })
 
@@ -578,8 +582,8 @@ function fill (jq, data, target) {
     eachAttr (jq, 'data-value',  data, function (me, n, v) {me.val (v)})
     eachAttr (jq, 'data-class',  data, function (me, n, v) {me.addClass (v)})
     eachAttr (jq, 'data-key',    data, function (me, n, v) {me.text (me.text () + ' (' + n + ')'); me.attr ('data-hotkey', n)})
-    eachAttr (jq, 'data-off',    data, function (me, n, v) {if (v) me.remove ()})
-    eachAttr (jq, 'data-on',     data, function (me, n, v) {if (!v) me.remove ()})
+    eachAttr (jq, 'data-off',    data, function (me, n, v) {if ( v) me.hide (); else me.show ()})
+    eachAttr (jq, 'data-on',     data, function (me, n, v) {if (!v) me.hide (); else me.show ()})
     eachAttr (jq, 'data-roles',  data, function (me, n, v) {if (n.split (/\W/).indexOf ($_USER.role) < 0) me.remove ()})
     eachAttr (jq, 'data-uri',    data, function (me, n, v) {
         if (!v) return
