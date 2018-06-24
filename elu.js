@@ -512,29 +512,9 @@ function fill (jq, data, target) {
     }
 
     if (data.fake == -1) jq.attr ('data-deleted', 1)
-
-    eachAttr (jq, 'data-list',   data, function (me, n, v) {
-    
-        if (!v) {
-            console.log ('Empty value as data-list in ' + me.get(0).outerHTML, data, n)
-            me.remove ()
-            return
-        }
-    
-        if (!$.isArray (v)) {
-            console.log ('Not a list as data-list for ' + me.get(0).outerHTML + ': ', v)
-            me.remove ()
-            return
-        }
-        
-        var list = $([]); for (var i = 0; i < v.length; i ++) list = list.add (fill (me.clone (), v [i]))
-
-        me.replaceWith (list)
-        
-    })
     
     eachAttr (jq, 'data-text',   data, function (me, n, v) {
-    
+
         if (v == null) v = me.attr ('data-default') || ''
         
         var dig = me.attr ('data-digits')
@@ -654,6 +634,26 @@ function fill (jq, data, target) {
         
         })
         
+    })
+    
+    eachAttr (jq, 'data-list', data, function (me, n, v) {
+        
+            if (!v) {
+                console.log ('Empty value as data-list in ' + me.get(0).outerHTML, data, n)
+                me.remove ()
+                return
+            }
+        
+            if (!$.isArray (v)) {
+                console.log ('Not a list as data-list for ' + me.get(0).outerHTML + ': ', v)
+                me.remove ()
+                return
+            }
+            
+            var list = $([]); for (var i = 0; i < v.length; i ++) list = list.add (fill (me.clone ().removeAttr ('data-list'), v [i]))
+    
+            me.replaceWith (list)
+            
     })
     
     jq.data ('data', data)
