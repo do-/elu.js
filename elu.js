@@ -465,7 +465,7 @@ function query (tia, data, done, fail) {
 
             var o = {data: jqXHR.responseJSON}
 
-            if (data.field) o.field = $('[name=' + data.field + ']')
+            if (o.data.field) o.field = $('[name=' + o.data.field + ']')
 
             $_DO.apologize (o, fail)
 
