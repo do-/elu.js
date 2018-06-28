@@ -936,10 +936,12 @@ var Base64file = {
         data.type  = file.type
         data.size  = file.size
 
-        query ({type: o.type, action: 'create', id: undefined}, {file: data}, function (id) {
+        query ({type: o.type, action: 'create', id: undefined}, {file: data}, function (data) {
+        
+            var id = typeof data === "object" ? data.id : data
 
-            var tia = {type: o.type, action: 'update', id: id}            
-            
+            var tia = {type: o.type, action: 'update', id: id}
+
             var reader = new FileReader ()
             
             var isBusy = false
