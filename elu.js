@@ -138,6 +138,10 @@ var $_SESSION = {
     }
 
 }
+
+function clone (o) {
+    return JSON.parse (JSON.stringify (o))
+}
         
 var $_USER
 
@@ -145,7 +149,7 @@ if (opener) try {
     
     var ou = opener.$_USER
     
-    if (ou) $_USER = JSON.parse (JSON.stringify (ou))
+    if (ou) $_USER = clone (ou)
     
 } catch (e) {}
 
