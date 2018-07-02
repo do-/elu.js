@@ -576,18 +576,7 @@ function fill (jq, data, target) {
     
     var textInputs = 'input:text, input[type=number], input[type=range], input:password, textarea, select'
 
-    if (data._read_only) {    
-    
-        $(textInputs, jq).each (function () {
-            if (this.type == 'hidden') return
-            var me = $(this)
-            me.replaceWith ($('<span />').text (me.val ()))
-        })   
 
-        $('input:radio', jq).not (':checked').parent ().remove ()
-        $('input:radio', jq).remove ()
-        
-    }
     
     if (data._can) {
         $('button[name]', jq).each (function () {
@@ -655,6 +644,18 @@ function fill (jq, data, target) {
 
     $(textInputs, jq).each (function () {$(this).val (data [this.name])})
     $('input:radio', jq).each (function () {var me = $(this); me.prop ('checked', me.val () == data [this.name])})
+
+    if (data._read_only) {
+
+        $(textInputs, jq).each (function () {
+            if (this.type == 'hidden') return
+            var me = $(this)
+            me.replaceWith ($('<span />').text (me.val ()))
+        })
+
+        $('input:radio', jq).not (':checked').parent ().remove ()
+        $('input:radio', jq).remove ()
+    }
 
     jq.data ('data', data)
     
