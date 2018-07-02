@@ -576,9 +576,6 @@ function fill (jq, data, target) {
     
     var textInputs = 'input:text, input[type=number], input[type=range], input:password, textarea, select'
 
-    $(textInputs, jq).each (function () {$(this).val (data [this.name])})
-    $('input:radio', jq).each (function () {var me = $(this); me.prop ('checked', me.val () == data [this.name])})
-
     if (data._read_only) {    
     
         $(textInputs, jq).each (function () {
@@ -655,7 +652,10 @@ function fill (jq, data, target) {
             me.replaceWith (list)
             
     })
-    
+
+    $(textInputs, jq).each (function () {$(this).val (data [this.name])})
+    $('input:radio', jq).each (function () {var me = $(this); me.prop ('checked', me.val () == data [this.name])})
+
     jq.data ('data', data)
     
     if (target) target.empty ().append (jq)
