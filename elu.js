@@ -488,10 +488,6 @@ function refill (data, target) {
     fill (target, data, target)
 }
 
-function fill (jq, data, target) {
-
-    jq = jq.clone ()
-
     function eachAttr (jq, a, data, todo) {
 
         jq.find ('*').addBack ().filter ('[' + a + ']').each (function () {
@@ -514,6 +510,10 @@ function fill (jq, data, target) {
         })
 
     }
+
+function fill (jq, data, target) {
+
+    jq = jq.clone ()
 
     if (data.fake == -1) jq.attr ('data-deleted', 1)
     
