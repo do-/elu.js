@@ -61,17 +61,36 @@ var $_SESSION = {
 
     get: function (key) {
 
+        var v = sessionStorage.getItem (key)
+        
+        if (v == null || v == '' || '{['.indexOf (v.charAt (0)) < 0) return v
+
         try {
-            return JSON.parse (sessionStorage.getItem (key))
+            return JSON.parse (v)
         }
         catch (e) {
             console.log (e)
             return undefined
-        }        
+        }
+
     },
     
-    set: function (key, object) {
-        sessionStorage.setItem (key, JSON.stringify (object))
+    delete: function (key) {
+    
+        var v = $_SESSION.get (key)
+        
+        sessionStorage.removeItem (key)
+        
+        return v
+        
+    },
+
+    set: function (k, v) {
+    
+        if (typeof v === "object") v = JSON.stringify (v)
+        
+        sessionStorage.setItem (k, v)
+        
     },
 
     keepAlive: function () {
