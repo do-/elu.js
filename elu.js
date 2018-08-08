@@ -86,7 +86,7 @@ var $_SESSION = {
     },
 
     set: function (k, v) {
-    
+
         if (typeof v === "object") v = JSON.stringify (v)
         
         sessionStorage.setItem (k, v)
@@ -977,11 +977,9 @@ var Base64file = {
         
             reader.addEventListener ("load", function () {
             
-                var s = reader.result
-                
                 isBusy = true
                 
-                query (tia, {chunk: s.substr (s.indexOf (','))}, function (data) {
+                query (tia, {chunk: reader.result.split (',').pop ()}, function (data) {
                     
                     isBusy = false
                     
