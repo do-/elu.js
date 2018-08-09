@@ -954,6 +954,9 @@ var Base64file = {
     upload: function (file, o) {
         
         if (!o.portion) o.portion = 128 * 1024
+        if (!o.action) o.action = {}
+        if (!o.action.create) o.action.create = 'create'
+        if (!o.action.update) o.action.update = 'update'
         
         var data = o.data ? o.data : {}
 
@@ -961,11 +964,11 @@ var Base64file = {
         data.type  = file.type
         data.size  = file.size
 
-        query ({type: o.type, action: 'create', id: undefined}, {file: data}, function (data) {
+        query ({type: o.type, action: o.action.create, id: undefined}, {file: data}, function (data) {
         
             var id = typeof data === "object" ? data.id : data
 
-            var tia = {type: o.type, action: 'update', id: id}
+            var tia = {type: o.type, action: o.action.update, id: id}
 
             var reader = new FileReader ()
             
