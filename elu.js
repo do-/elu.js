@@ -512,6 +512,7 @@ function refill (data, target) {
         jq.find ('*').addBack ().filter ('[' + a + ']').each (function () {
             var me   = $(this)
             var name = me.attr (a)
+            if (name in data) return todo (me, name, data [name])
             var names = name.split ('.')
             if (names.length == 1) {
                 todo (me, name, data [name])
