@@ -675,7 +675,9 @@ function fill (jq, data, target) {
         $(textInputs, jq).each (function () {
             if (this.type == 'hidden') return
             var me = $(this)
-            me.replaceWith ($('<span />').text (me.val ()))
+            var val = me.val()
+            if (this.tagName == 'SELECT') val = $('option[value="' + val + '"]', me).text()
+            me.replaceWith ($('<span />').text (val))
         })
 
         $('input:radio', jq).not (':checked').parent ().remove ()
