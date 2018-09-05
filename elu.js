@@ -504,7 +504,7 @@ function query (tia, data, done, fail) {
 }
 
 function refill (data, target) {
-    fill (target, data, target)
+    target.replaceWith (fill (target, data))
 }
 
     function eachAttr (jq, a, data, todo) {
