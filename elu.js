@@ -957,6 +957,8 @@ var Base64file = {
     upload: function (file, o) {
         
         if (!o.portion) o.portion = 128 * 1024
+        if ( o.portion == file.size - 1) o.portion += 4096        
+        
         if (!o.action) o.action = {}
         if (!o.action.create) o.action.create = 'create'
         if (!o.action.update) o.action.update = 'update'
