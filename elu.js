@@ -12,8 +12,6 @@
 
                     var xhr = new XMLHttpRequest ()
                         
-                    xhr.responseType = options.responseType || "blob"
-
                     if (options.onprogress) xhr.addEventListener ("progress", function (e) {options.onprogress (e.loaded, e.total)}, false)
 
                     function onComplete () {
@@ -26,6 +24,7 @@
                     xhr.addEventListener ('error', onComplete, false);
                     
                     xhr.open (options.type, options.url, true)
+                    xhr.responseType = options.responseType || "blob"
 
                     for (var i in headers) xhr.setRequestHeader (i, headers [i])
 
