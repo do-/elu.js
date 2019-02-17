@@ -471,6 +471,8 @@ function query (tia, data, done, fail) {
 
     .done (function (data) {
         
+        if (data == null) return $_DO.apologize ({}, fail)
+
         if (data.success) return done (data.content)
         
         var o = {data: data}
