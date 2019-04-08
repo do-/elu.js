@@ -11,7 +11,7 @@
                 send: function(headers, callback) {
 
                     var xhr = new XMLHttpRequest ()
-                        
+
                     if (options.onprogress) xhr.addEventListener ("progress", function (e) {options.onprogress (e.loaded, e.total)}, false)
 
                     function onComplete () {
@@ -22,27 +22,27 @@
 
                     xhr.addEventListener ('load', onComplete, false);
                     xhr.addEventListener ('error', onComplete, false);
-                    
+
                     xhr.open (options.type, options.url, true)
                     xhr.responseType = options.responseType || "blob"
 
                     for (var i in headers) xhr.setRequestHeader (i, headers [i])
 
                     xhr.send (options.data)
-                
+
                 },
-                
+
                 abort: function () {}
-                
+
             }
-            
+
         }
-        
+
     })
-    
+
 })(window.jQuery);
 
-// elu.js 
+// elu.js
 
 var $_REQUEST = {}, $_DO = {}, $_DRAW = {}
 
@@ -61,7 +61,7 @@ var $_SESSION = {
     get: function (key) {
 
         var v = sessionStorage.getItem (key)
-        
+
         if (v == null || v == '' || '{['.indexOf (v.charAt (0)) < 0) return v
 
         try {
@@ -73,29 +73,29 @@ var $_SESSION = {
         }
 
     },
-    
+
     delete: function (key) {
-    
+
         var v = $_SESSION.get (key)
-        
+
         sessionStorage.removeItem (key)
-        
+
         return v
-        
+
     },
 
     set: function (k, v) {
 
         if (typeof v === "object") v = JSON.stringify (v)
-        
+
         sessionStorage.setItem (k, v)
-        
+
     },
 
     keepAlive: function () {
         query ({type: undefined}, {}, $.noop, $.noop)
     },
-    
+
     beforeExpiry: function (todo) {
 
         var keepAliveTimer;
@@ -112,33 +112,33 @@ var $_SESSION = {
 
             keepAliveTimer = setTimeout (todo, 1000 * (60 * timeout - 1))
 
-        });    
+        });
 
     },
-    
+
     start: function (user, timeout) {
-    
+
         $_SESSION.set ('user', $_USER = user)
-        
+
         localStorage.setItem ('user', 1)
-        
+
         if (timeout) $_SESSION.set ('timeout', timeout < 1 ? 1 : timeout)
 
     },
-    
+
     end: function () {
-    
+
         window.__LOGOUT__ = 1
-        
+
         sessionStorage.clear ()
-        
+
         $_USER = undefined
-    
+
         localStorage.removeItem ('user')
 
     },
-    
-    closeAllOnLogout: function (e) { 
+
+    closeAllOnLogout: function (e) {
 
         if (e.key != 'user' || window.__LOGOUT__ || e.newValue) return
 
@@ -160,15 +160,15 @@ var $_SESSION = {
 function clone (o) {
     return JSON.parse (JSON.stringify (o))
 }
-        
+
 var $_USER
 
 if (opener) try {
-    
+
     var ou = opener.$_USER
-    
+
     if (ou) $_USER = clone (ou)
-    
+
 } catch (e) {}
 
 if (!$_USER) $_USER = $_SESSION.get ('user')
@@ -194,9 +194,9 @@ function en_unplural (s) {
         if (!s.match (re)) continue
         return s.replace (re, table [i] [1])
     }
-    
+
     return s;
-    
+
 }
 
 function fire (f) {f ()}
@@ -206,25 +206,25 @@ var use = {
 }
 
 use.data = function (name) {
-        
+
     require (['app/data/' + name], fire)
-               
+
 }
 
 use.view = function (name, data) {
 
     require (['app/view/' + name], function (f) {
-        
+
         var html = $('<span>')
 
         html.load (staticURL ('app/html/' + name + '.html'), function () {
-            
+
             var tmp = html.children ()
-            
+
             $('*', tmp).attr ('data-block-name', name)
-        
+
             f (data, tmp)
-        
+
         })
 
     })
@@ -237,29 +237,29 @@ use.block = function (name) {
 
         require (['app/data/' + name], function (f) {
 
-            f (function (data) { use.view (name, data) })            
+            f (function (data) { use.view (name, data) })
 
         })
-    
+
     }
     catch (e) {
-    
+
         if ((typeof e === 'string' || e instanceof String) && e.match (/^core\.ok\./)) {
             // do nothing
         }
         else {
             darn (e)
         }
-        
-    }    
-    
+
+    }
+
 }
 
 function values (jq) {
 
     var o = {}
 
-    $('input[required]', jq).each (function () {    
+    $('input[required]', jq).each (function () {
         var me = $(this)
         if (me.val ()) return true
         me.focus ()
@@ -267,7 +267,7 @@ function values (jq) {
         throw 'core.ok.validation_error'
     })
 
-    $('input[pattern]', jq).each (function () {    
+    $('input[pattern]', jq).each (function () {
         var me = $(this)
         var re = new RegExp (me.attr ('pattern'));
         if (re.test (me.val ())) return true
@@ -277,18 +277,18 @@ function values (jq) {
     })
 
     var form = jq.prop ("tagName") == 'FORM' ? jq : $('form', jq)
-    
+
     if (!form.length) form = jq.clone ().wrap ('<form/>').parent ()
-    
+
     var a = form.serializeArray ()
-        
+
     for (var i = 0; i < a.length; i ++) o[a[i].name] = a[i].value.trim ()
-    
-    $('input[type=password]', jq).each (function () {    
+
+    $('input[type=password]', jq).each (function () {
         if (!$_REQUEST._secret) $_REQUEST._secret = []
         $_REQUEST._secret.push (this.name)
     })
-    
+
     $('select', jq).each (function () {
         o[this.name] = $(this).val ()
     })
@@ -296,7 +296,7 @@ function values (jq) {
     $('input[type=checkbox]', jq).each (function () {
         o[this.name] = $(this).prop ('checked') ? 1 : 0
     })
-    
+
     return o
 
 }
@@ -313,7 +313,7 @@ function dynamicURL (tia, postfix) {
     }
 
     if (tia.type && !('id' in tia) && $_REQUEST.id) tia.id = $_REQUEST.id
-    
+
     return sessionStorage.getItem ('dynamicRoot') + (postfix || '') + '/?' + $.param (tia)
 
 }
@@ -332,14 +332,14 @@ function download (tia, data, o) {
     $.ajax (dynamicURL (tia), o)
 
     .done (function (data, textStatus, jqXHR) {
-        
+
         var fn = '1.bin';
-    
+
         var cd = jqXHR.getResponseHeader (  'Content-Disposition')
-        
+
         var pre = 'attachment;filename='
         var prelen = pre.length
-        
+
         if (cd && cd.substr (0, prelen) == pre) fn = decodeURIComponent (cd.substr (prelen))
 
         data.saveAs (fn);
@@ -347,7 +347,14 @@ function download (tia, data, o) {
     })
     .fail (function (jqXHR, e) {
 
-        alert ('Загрузить файл не удалось. ' + (e == 'error' ? 'На сервере произошла ошибка' : 'Похоже, сервер оказался недоступен.'))
+        if (jqXHR.status == 401) {
+            localStorage.removeItem ('user')
+            sessionStorage.removeItem ('user')
+            $_USER = undefined
+            location.reload ()
+        } else {
+            alert ('Загрузить файл не удалось. ' + (e == 'error' ? 'На сервере произошла ошибка' : 'Похоже, сервер оказался недоступен.'))
+        }
 
     })
     .always (function (jqXHR, e) {
@@ -370,18 +377,18 @@ var $_F5 = function (data) {
 }
 
 $_DO.apologize = function (o, fail) {
-    
+
     if (fail) return fail (o)
-    
+
     if (o.data) {
         var data = o.data
         if (o.field) o.field.focus ()
         if (data.message) alert (data.message)
         return
     }
-    
+
     if (o.jqXHR) {
-    
+
         var jqXHR = o.jqXHR
         var e = o.error
 
@@ -390,13 +397,13 @@ $_DO.apologize = function (o, fail) {
             sessionStorage.removeItem ('user')
             $_USER = undefined
             location.reload ()
-        } 
+        }
         else if (jqXHR.status == 413) {
             alert ('Вы пытаетесь передать слишком большой объём данных: вероятно, файл недопустимой величины')
-        } 
+        }
         else if (jqXHR.status == 504) {
             location.href = '/_maintenance/'
-        } 
+        }
         else {
 
             console.log (jqXHR, e)
@@ -407,23 +414,23 @@ $_DO.apologize = function (o, fail) {
 
             }
             else {
-            
+
                 if (fail) return fail (o)
-            
+
                 alert ('Не удалось получить ответ от сервера.' + (
-                
-                    e == "timeout" ? 
-                        
-                        ' Возможно, он перегружен либо имеют место проблемы с сетью. Пожалуйста, попробуйте обновить страницу или возобновить работу позже.' : 
-                        
+
+                    e == "timeout" ?
+
+                        ' Возможно, он перегружен либо имеют место проблемы с сетью. Пожалуйста, попробуйте обновить страницу или возобновить работу позже.' :
+
                         ''
-                        
+
                 ))
-                    
+
             }
-            
-        }    
-    
+
+        }
+
     }
 
 }
@@ -449,7 +456,7 @@ function query (tia, data, done, fail) {
     if (!done) done = $_F5
 
     var headers = {};
-    
+
     if ($_REQUEST._secret) {
         for (var i = 0; i < $_REQUEST._secret.length; i ++) {
             var name = $_REQUEST._secret [i]
@@ -470,21 +477,21 @@ function query (tia, data, done, fail) {
     })
 
     .done (function (data) {
-        
+
         if (data == null) return $_DO.apologize ({}, fail)
 
         if (data.success) return done (data.content)
-        
+
         var o = {data: data}
-        
+
         if (data.field) o.field = $('[name=' + data.field + ']')
-        
+
         $_DO.apologize (o, fail)
 
     })
-    
+
     .fail (function (jqXHR, e) {
-    
+
         if (jqXHR.status == 422) {
 
             var o = {data: jqXHR.responseJSON}
@@ -537,22 +544,22 @@ function fill (jq, data, target) {
     jq = jq.clone ()
 
     if (data.fake == -1) jq.attr ('data-deleted', 1)
-    
+
     eachAttr (jq, 'data-text',   data, function (me, n, v) {
 
         if (v == null) v = me.attr ('data-default') || ''
-        
+
         var dig = me.attr ('data-digits')
-        
+
         if (dig != null) {
-        
+
             v = $.isNumeric (v) ? new Number (v).toLocaleString ([], {minimumFractionDigits: dig, maximumFractionDigits: dig}) : ''
-            
+
         }
         else {
 
             var dt = me.attr ('data-date')
-            
+
             if (dt != null) {
 
                 var ymd = v.substr (0, 10).split (/\D+/)
@@ -560,10 +567,10 @@ function fill (jq, data, target) {
                 if (ymd [2] > 31) ymd.reverse ()
 
                 v = new Date (ymd [0], ymd [1] - 1, ymd [2]).toLocaleDateString ([], dt.length ? JSON.parse (dt) : undefined)
-            
+
             }
             else {
-            
+
                 var ts = me.attr ('data-ts')
 
                 if (ts != null) {
@@ -571,15 +578,15 @@ function fill (jq, data, target) {
                     v = new Date (v).toLocaleString ([], ts.length ? JSON.parse (ts) : undefined)
 
                 }
-            
+
             }
 
         }
-        
+
         me.text (v)
-        
+
     })
-    
+
     eachAttr (jq, 'data-html',   data, function (me, n, v) {me.html (v)})
     eachAttr (jq, 'data-id-field', data, function (me, n, v) {me.attr ('data-id', v)})
     eachAttr (jq, 'data-name',   data, function (me, n, v) {me.attr ('name', v)})
@@ -597,38 +604,38 @@ function fill (jq, data, target) {
         me.attr ('data-href', v).find (leaves).addBack (leaves).wrapInner ('<span class="anchor"/>')
     })
     eachAttr (jq, 'data-img',    data, function (me, n, v) {me.css ({'background-image': 'url(data:' + v + ')'}); me.attr ('data-image', n)})
-    
+
     clickOn ($('span.anchor', jq), onDataUriDblClick)
-    
+
     var textInputs = 'input:text, input[type=number], input[type=range], input:password, textarea, select'
 
 
-    
+
     if (data._can) {
         $('button[name]', jq).each (function () {
             if (!data._can [this.name]) $(this).remove ()
         })
     }
     $('button[name]', jq).each (function () {
-    
+
         var $this = $(this)
-    
+
         var handler = $_DO [this.name + '_' + $this.attr ('data-block-name')]
 
         if (!handler) return
-    
+
         clickOn ($this, function (event) {
-            
+
             try { handler (event) }
-            
+
             catch (e) {
 
                 if (typeof e === 'string' || e instanceof String) {
-                
+
                     if (e.match (/^core\.ok\./)) {
                         // do nothing
                     }
-                    else {                            
+                    else {
                         var m = /^#(.*?)#:(.*)/.exec (e)
                         if (m) {
                             $('*[name=' + m [1] + ']').focus ()
@@ -636,36 +643,36 @@ function fill (jq, data, target) {
                         }
                         else throw e
                     }
-                
+
                 }
                 else {
                     throw e
                 }
-            
-            }        
-        
+
+            }
+
         })
-        
+
     })
-    
+
     eachAttr (jq, 'data-list', data, function (me, n, v) {
-        
+
             if (!v) {
                 console.log ('Empty value as data-list in ' + me.get(0).outerHTML, data, n)
                 me.remove ()
                 return
             }
-        
+
             if (!$.isArray (v)) {
                 console.log ('Not a list as data-list for ' + me.get(0).outerHTML + ': ', v)
                 me.remove ()
                 return
             }
-            
+
             var list = $([]); for (var i = 0; i < v.length; i ++) list = list.add (fill (me.clone ().removeAttr ('data-list'), v [i]))
-    
+
             me.replaceWith (list)
-            
+
     })
 
     $(textInputs, jq).each (function () {$(this).val (data [this.name])})
@@ -686,7 +693,7 @@ function fill (jq, data, target) {
     }
 
     jq.data ('data', data)
-    
+
     if (target) target.empty ().append (jq)
 
     return jq
@@ -721,7 +728,7 @@ Blob.prototype.saveAs = function (name) {
         a.click ()
 
         window.URL.revokeObjectURL (url)
-        
+
         a.outerHTML = ''
 
     }
@@ -740,15 +747,15 @@ $.fn.slideAsNeeded = function (is, o) {
 $.fn.saveAsXLS = function (name) {
 
     if (!name) name = $('title').text ()
-    
+
     name += '.xls';
-    
+
     $('th, td', this).each (function () {
-        
+
         var $this = $(this)
-            
+
         if ($this.css ('display') == 'none') $this.remove ()
-            
+
     });
 
     ('<html><head><meta charset=utf-8></head><body><table border>' + this.html () + '</table></body></html>').saveAs (name)
@@ -756,7 +763,7 @@ $.fn.saveAsXLS = function (name) {
 };
 
 String.prototype.saveAs = function (name, type) {
-    
+
     if (!type) type = 'application/octet-stream'
 
     new Blob ([this], {type: type}).saveAs (name)
@@ -768,7 +775,7 @@ function xmlDoc (data, name) {
     if (!name) name = 'data'
 
     var doc = document.implementation.createDocument (null, name, null)
-            
+
     function append (element, name, content) {
         var e = document.createElementNS (null, name)
         objectToElement (content, e)
@@ -776,19 +783,19 @@ function xmlDoc (data, name) {
     }
 
     function objectToElement (o, el) {
-    
+
         for (var k in o) {
-        
+
             var v = o [k]; if (v == null) continue
-            
+
             if (/^[^A-Z]/i.test (k)) k = 'a-' + k
-            
+
             if      ($.isArray (v))         { for (var i = 0; i < v.length; i ++) append (el, en_unplural (k), v [i]) }
             else if (typeof v === "object") { append (el, k, v)      }
-            else                            { el.setAttribute (k, v) }            
-            
+            else                            { el.setAttribute (k, v) }
+
         }
-        
+
     }
 
     objectToElement (data, doc.documentElement)
@@ -880,12 +887,12 @@ function refreshOpener () {
 $_DO.route = function (type, action, launch) {
 
     if ($.isArray (action)) {
-    
+
         for (var i = 0; i < action.length; i ++) $_DO.route (type, action [i], launch)
-    
+
     }
     else {
-    
+
         var theQuery = function () {query ({action: action})}
 
         $_DO [action + '_' + type] = launch ? function () {launch (theQuery)} : theQuery
@@ -899,17 +906,17 @@ function wait (o) {
     o.interval |= 100
 
     var isBusy = false
-    
+
     var t = setInterval (function () {
-    
+
         if (isBusy) return
-        
+
         isBusy = true
-        
+
         if (!o.until ()) return (isBusy = false)
-        
+
         clearInterval (t)
-        
+
         if (o.then) o.then ()
 
     }, o.interval)
@@ -933,7 +940,7 @@ var Base64file = {
         return canvas.toDataURL (type, quality)
 
     },
-    
+
     measure: function (src, callback) {
 
         var img = $('<img>')
@@ -954,16 +961,16 @@ var Base64file = {
         img.attr ({src: src})
 
     },
-       
+
     upload: function (file, o) {
-        
+
         if (!o.portion) o.portion = 128 * 1024
         if (file.size % (o.portion + 1) == 0) o.portion += 4096
-        
+
         if (!o.action) o.action = {}
         if (!o.action.create) o.action.create = 'create'
         if (!o.action.update) o.action.update = 'update'
-        
+
         var data = o.data ? o.data : {}
 
         data.label = file.name
@@ -971,27 +978,27 @@ var Base64file = {
         data.size  = file.size
 
         query ({type: o.type, action: o.action.create, id: undefined}, {file: data}, function (data) {
-        
+
             var id = typeof data === "object" ? data.id : data
 
             var tia = {type: o.type, action: o.action.update, id: id}
 
             var reader = new FileReader ()
-            
+
             var isBusy = false
-            
+
             var start = 0
-                        
+
             var timer;
-        
+
             reader.addEventListener ("load", function () {
-            
+
                 isBusy = true
-                
+
                 query (tia, {chunk: reader.result.split (',').pop ()}, function (data) {
-                    
+
                     isBusy = false
-                    
+
                     if (o.onprogress) o.onprogress (start - 1, file.size)
 
                     if (start > file.size) {
@@ -1004,27 +1011,27 @@ var Base64file = {
 
                 })
 
-            }, false)                        
-                        
+            }, false)
+
             timer = setInterval (function () {
 
                 if (isBusy) return
 
                 if (reader.readyState == 1) return
-                
+
                 var end = start + o.portion
-                
+
                 if (end > file.size) end = file.size
-            
+
                 reader.readAsDataURL (file.slice (start, ++ end))
-                
+
                 start = end
-                                
+
             }, 10)
 
         })
-   
-    }   
+
+    }
 
 }
 
