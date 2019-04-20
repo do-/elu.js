@@ -251,6 +251,22 @@ use.text = async function (path) {
 
 }
 
+use.html = async function (name) {
+
+    return use.text (`html/${name}.html`)
+    
+}
+
+use.jq = async function (name) {
+
+    let $html = $(await use.html (name))
+    
+    $('*', $html).attr ('data-block-name', name)
+    
+    return $html
+
+}
+
 use.js = async function (path) {
 
     let src = await use.text (`js/${path}.js`)
@@ -679,51 +695,13 @@ function fill (jq, data, target) {
 
     var textInputs = 'input:text, input[type=number], input[type=range], input:password, textarea, select'
 
-
-
     if (data._can) {
         $('button[name]', jq).each (function () {
             if (!data._can [this.name]) $(this).remove ()
         })
     }
-    $('button[name]', jq).each (function () {
-
-        var $this = $(this)
-
-        var handler = $_DO [this.name + '_' + $this.attr ('data-block-name')]
-
-        if (!handler) return
-
-        clickOn ($this, function (event) {
-
-            try { handler (event) }
-
-            catch (e) {
-
-                if (typeof e === 'string' || e instanceof String) {
-
-                    if (e.match (/^core\.ok\./)) {
-                        // do nothing
-                    }
-                    else {
-                        var m = /^#(.*?)#:(.*)/.exec (e)
-                        if (m) {
-                            $('*[name=' + m [1] + ']').focus ()
-                            alert (m [2])
-                        }
-                        else throw e
-                    }
-
-                }
-                else {
-                    throw e
-                }
-
-            }
-
-        })
-
-    })
+    
+    jq.setup_buttons ()        
 
     eachAttr (jq, 'data-list', data, function (me, n, v) {
 
@@ -802,6 +780,49 @@ Blob.prototype.saveAs = function (name) {
         a.outerHTML = ''
 
     }
+
+}
+
+$.fn.setup_buttons = function () {
+
+    $('button[name]', this).each (function () {
+
+        var $this = $(this)
+
+        var handler = $_DO [this.name + '_' + $this.attr ('data-block-name')]
+
+        if (!handler) return
+
+        clickOn ($this, function (event) {
+
+            try { handler (event) }
+
+            catch (e) {
+
+                if (typeof e === 'string' || e instanceof String) {
+
+                    if (e.match (/^core\.ok\./)) {
+                        // do nothing
+                    }
+                    else {
+                        var m = /^#(.*?)#:(.*)/.exec (e)
+                        if (m) {
+                            $('*[name=' + m [1] + ']').focus ()
+                            alert (m [2])
+                        }
+                        else throw e
+                    }
+
+                }
+                else {
+                    throw e
+                }
+
+            }
+
+        })
+
+    })
 
 }
 
