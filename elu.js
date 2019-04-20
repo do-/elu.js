@@ -252,8 +252,16 @@ use.text = async function (path) {
 }
 
 use.js = async function (path) {
-    let src = await use.text (`js/${path}`)
-    eval (`function () {${src}} ()`)
+
+    let src = await use.text (`js/${path}.js`)
+
+    try {
+        eval ('(function(){' + src + '})()')
+    }
+    catch (e) {
+        console.log (e)
+    }
+    
 }
 
 async function show_block (name, o) {
