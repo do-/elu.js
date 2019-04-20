@@ -44,7 +44,7 @@
 
 // elu.js
 
-var $_REQUEST = {}, $_DO = {}, $_DRAW = {}
+var $_REQUEST = {}, $_DO = {}, $_GET = {}, $_DRAW = {}
 
 function darn (o) {
     if (console) console.log (o)
@@ -229,6 +229,49 @@ use.view = function (name, data) {
 
     })
 
+}
+
+use.text = async function (path) {
+
+    let result;
+
+    try {
+    
+        result = await $.ajax({
+            url: staticURL ('app/' + path),
+            dataType: 'text'
+        })
+
+        return result
+        
+    } 
+    catch (error) {
+        $_DO.apologize (error)
+    }    
+
+}
+
+use.js = async function (path) {
+    let src = await use.text (`js/${path}`)
+    eval (`function () {${src}} ()`)
+}
+
+async function show_block (name, o) {
+    
+    if (!o) o = {}
+    
+    console.log ([name, o])
+    
+    if (!(name in $_GET))  await use.js (`data/${name}`)
+    if (!(name in $_DRAW)) await use.js (`view/${name}`)
+    
+    let data = await $_GET  [name] (o)
+    let view = await $_DRAW [name] (data)
+    
+    if (view) $('*', view).attr ('data-block-name', name)
+    
+    return view
+    
 }
 
 use.block = function (name) {
