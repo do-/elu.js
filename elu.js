@@ -274,6 +274,14 @@ async function show_block (name, o) {
     
 }
 
+$.fn.show_block = async function (name, o) {
+
+    let view = await show_block (name, o)
+    
+    this.empty ().append (view)
+
+}
+
 use.block = function (name) {
 
     try {
