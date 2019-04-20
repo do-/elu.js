@@ -268,10 +268,13 @@ async function show_block (name, o) {
     
     if (!o) o = {}
     
-    console.log ([name, o])
+    console.log ('show_block ' + name, o)
     
     if (!(name in $_GET))  await use.js (`data/${name}`)
+    if (!(name in $_GET))  return console.log (`$_GET.${name} is not defined!`)
+    
     if (!(name in $_DRAW)) await use.js (`view/${name}`)
+    if (!(name in $_DRAW)) return console.log (`$_DRAW.${name} is not defined!`)
     
     let data = await $_GET  [name] (o)
     let view = await $_DRAW [name] (data)
