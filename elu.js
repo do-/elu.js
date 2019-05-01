@@ -974,7 +974,7 @@ function blockEvent (e) {
 }
 
 function refreshOpener () {
-    try {window.opener.showIt ()} catch (e) {}
+    try {window.opener.location.reload ()} catch (e) {}
 }
 
 $_DO.route = function (type, action, launch) {
