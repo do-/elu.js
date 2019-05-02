@@ -295,10 +295,14 @@ async function show_block (name, o) {
     let data = await $_GET  [name] (o)
     let view = await $_DRAW [name] (data)
     
-    if (view) $('*', view).attr ('data-block-name', name)
+    if (!view) return
     
+    $('*', view).attr ('data-block-name', name)
+
+    view.setup_buttons ()
+
     return view
-    
+
 }
 
 $.fn.show_block = async function (name, o) {
