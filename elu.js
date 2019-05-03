@@ -797,9 +797,9 @@ $.fn.setup_buttons = function () {
 
         if (!handler) return
 
-        clickOn ($this, function (event) {
+        clickOn ($this, async function (event) {
 
-            try { handler (event) }
+            try { await handler (event) }
 
             catch (e) {
 
