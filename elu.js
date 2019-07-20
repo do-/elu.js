@@ -56,6 +56,44 @@ function redirect (url) {
     throw 'core.ok.redirect'
 }
 
+var $_LOCAL = {
+
+    get: function (key) {
+
+        var v = localStorage.getItem (key)
+
+        if (v == null || v == '' || '{['.indexOf (v.charAt (0)) < 0) return v
+
+        try {
+            return JSON.parse (v)
+        }
+        catch (e) {
+            console.log (e)
+            return undefined
+        }
+
+    },
+
+    delete: function (key) {
+
+        var v = $_SESSION.get (key)
+
+        localStorage.removeItem (key)
+
+        return v
+
+    },
+
+    set: function (k, v) {
+
+        if (typeof v === "object") v = JSON.stringify (v)
+
+        localStorage.setItem (k, v)
+
+    },
+
+}
+
 var $_SESSION = {
 
     get: function (key) {
@@ -119,8 +157,7 @@ var $_SESSION = {
     start: function (user, timeout) {
 
         $_SESSION.set ('user', $_USER = user)
-
-        localStorage.setItem ('user', 1)
+        $_LOCAL.set ('user', user)
 
         if (timeout) $_SESSION.set ('timeout', timeout < 1 ? 1 : timeout)
 
@@ -161,17 +198,8 @@ function clone (o) {
     return JSON.parse (JSON.stringify (o))
 }
 
-var $_USER
-
-if (opener) try {
-
-    var ou = opener.$_USER
-
-    if (ou) $_USER = clone (ou)
-
-} catch (e) {}
-
-if (!$_USER) $_USER = $_SESSION.get ('user')
+var $_USER = $_LOCAL.get ('user')
+if ($_USER) $_SESSION.set ('user', $_USER)
 
 function en_unplural (s) {
 
