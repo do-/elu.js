@@ -1179,7 +1179,7 @@ function new_uuid () {
 
 }
 
-function dt_dmy    (v) { return !v ? '' : v.split ('-').reverse (). join ('.') }
+function dt_dmy    (v) { return !v ? '' : v.slice (0, 10).split ('-').reverse (). join ('.') }
 
 function dt_dmy2   (v) { 
     if (!v) return ''
