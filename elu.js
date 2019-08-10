@@ -1219,3 +1219,50 @@ function die (name, text) {
 function not_off (i) {return !i.off}
 
 function reload_page () { location.reload () }
+
+function check_hotkeys (e) {
+
+    switch (e.key) {
+        case "Control":
+        case "Alt":
+        case "Shift":
+            return
+    }
+    
+    let k = e.key
+
+    if (k.length == 1) {
+    
+        if (!e.ctrlKey && !e.altKey) return
+        
+        k = k.toUpperCase ()
+        
+    }
+    else {
+    
+        if (e.shiftKey) k = 'Shift-' + k
+    
+    }
+    
+    if (e.altKey)  k = 'Alt-'   + k
+    if (e.ctrlKey) k = 'Ctrl-'  + k
+    
+    switch (k) {
+        case "Escape":
+        case "Ctrl-A":
+        case "Ctrl-C":
+        case "Ctrl-V":
+        case "Ctrl-Insert":
+        case "Shift-Insert":
+            return
+    }
+    
+    let $b = $(`button[data-hotkey=${k}]`)
+    
+    if ($b.length == 0) return 
+    
+    $b.first ().click ()
+    
+    blockEvent (e)
+    
+}
