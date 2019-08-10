@@ -657,6 +657,10 @@ function refill (data, target) {
 
     }
 
+async function to_fill (name, data, target) {
+    return fill ((await use.jq (name)), data, target)
+}
+
 function fill (jq, data, target) {
 
     jq = jq.clone ()
