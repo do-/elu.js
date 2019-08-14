@@ -864,7 +864,7 @@ $.fn.setup_buttons = function () {
 
 $.fn.slideAsNeeded = function (is, o) {
 
-    var was = this.css ('display') == 'block'
+    var was = this.css ('display') != 'none'
 
     if (!was && is) this.slideDown (o)
     if (was && !is) this.slideUp   (o)
