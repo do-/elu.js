@@ -1240,6 +1240,7 @@ function check_hotkeys (e) {
     }
     
     let k = e.key
+    if (k == "Escape") k = "Esc"
 
     if (k.length == 1) {
     
@@ -1258,7 +1259,6 @@ function check_hotkeys (e) {
     if (e.ctrlKey) k = 'Ctrl-'  + k
     
     switch (k) {
-        case "Escape":
         case "Ctrl-A":
         case "Ctrl-C":
         case "Ctrl-V":
