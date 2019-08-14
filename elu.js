@@ -1267,7 +1267,7 @@ function check_hotkeys (e) {
             return
     }
     
-    let $b = $(`button[data-hotkey=${k}]`)
+    let $b = $(`button[data-hotkey=${k}]:visible`)
     
     if ($b.length == 0) return 
     
