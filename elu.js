@@ -1271,7 +1271,7 @@ function check_hotkeys (e) {
     
     if ($b.length == 0) return 
     
-    $b.first ().click ()
+    $b.first ().focus ().click ()
     
     blockEvent (e)
     
