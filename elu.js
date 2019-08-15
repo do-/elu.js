@@ -871,12 +871,6 @@ $.fn.slideAsNeeded = function (is, o) {
 
 }
 
-$.fn.showIf = function (is, o) {
-
-    if (is) this.show (o); else this.hide (o)
-
-}
-
 $.fn.saveAsXLS = function (name) {
 
     if (!name) name = $('title').text ()
