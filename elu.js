@@ -1226,16 +1226,19 @@ function reload_page () { location.reload () }
 
 function check_hotkeys (e) {
 
-    switch (e.key) {
+    let k = e.key;
+
+    switch (k) {
+    	case undefined:
+    	case null:
         case "Control":
         case "Alt":
         case "Shift":
             return
+        case "Escape":
+        	k = "Esc"
     }
     
-    let k = e.key
-    if (k == "Escape") k = "Esc"
-
     if (k.length == 1) {
     
         if (!e.ctrlKey && !e.altKey) return
