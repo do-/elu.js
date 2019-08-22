@@ -1273,3 +1273,11 @@ function check_hotkeys (e) {
     blockEvent (e)
     
 }
+
+function FormValues (o) {
+	if (o) for (var i in o) this [i] = o [i]
+}
+
+FormValues.prototype.not_null = function (name, msg) {
+	if (this [name] == null) die (name, msg)
+}
