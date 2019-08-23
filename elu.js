@@ -1281,3 +1281,12 @@ function FormValues (o) {
 FormValues.prototype.not_null = function (name, msg) {
 	if (this [name] == null) die (name, msg)
 }
+
+FormValues.prototype.max_length = function (name, len, msg) {
+	let v = this [name]
+	if (v == null) return
+	if (String (v).length <= len) return
+	if (msg == null) msg = (l) => `В это поле нельзя вводить текст длиннее ${l} символов`
+	if (typeof (msg) === 'function') msg = msg (len, name)
+	die (name, msg)
+}
