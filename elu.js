@@ -714,6 +714,26 @@ function fill (jq, data, target) {
     })
 
     $(textInputs, jq).each (function () {$(this).val (data [this.name])})
+    
+    let _fields = data._fields; if (_fields) {
+    
+		$('input:text, input:password, textarea', jq).each (function () {
+			
+			let f = _fields [this.name]; 
+
+			if (!f) return
+		
+			let $this = $(this)
+			
+			function set (k, v) {if (v != null && $this.attr (k) == null) $this.attr (k, v)}
+			
+			set ('maxlength', f.COLUMN_SIZE)
+			set ('pattern', f.PATTERN)
+		
+		})
+    
+    }
+        
     $('input:radio', jq).each (function () {var me = $(this); me.prop ('checked', me.val () == data [this.name])})
 
     if (data._read_only) {
