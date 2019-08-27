@@ -728,6 +728,7 @@ function fill (jq, data, target) {
 			function set (k, v) {if (v != null && $this.attr (k) == null) $this.attr (k, v)}
 			
 			set ('maxlength', f.COLUMN_SIZE)
+			set ('minlength', f.MIN_LENGTH)
 			set ('pattern', f.PATTERN)
 		
 		})
@@ -1248,8 +1249,69 @@ function check_hotkeys (e) {
     
 }
 
-function FormValues (o) {
+function FormValues (o, jq) {
+
 	if (o) for (var i in o) this [i] = o [i]
+
+	if (!jq) return
+	
+	let err = []
+	
+	$('input, textarea', jq).each (function () {
+	
+		let name = this.name
+		
+		let v = o [name]
+
+		let $this = $(this)		
+		
+		if (v == null) {
+
+			if ($this.attr ('required') && $this.is (":visible")) err.push ({name, error: 'required'})
+
+		}
+		else {
+
+			let s = '' + v
+
+			let maxlength = $this.attr ('maxlength') 
+			if (maxlength && v.length > maxlength) err.push ({name, error: 'maxlength', maxlength})
+
+			let minlength = $this.attr ('minlength') 
+			if (minlength && v.length < minlength) err.push (
+				maxlength && maxlength == minlength ? 
+				{name, error: 'fixlength', fixlength: minlength} : 
+				{name, error: 'minlength', minlength}
+			)
+
+			let pattern = $this.attr ('pattern')
+			if (pattern && !(new RegExp (pattern)).test (v)) err.push ({name, error: 'pattern', pattern})
+
+		}	
+				
+	})
+
+	if (err.length > 0) this._validation_errors = err
+	
+}
+
+FormValues.prototype.get_validation_message = function (e) {
+
+	switch (e.error) {
+		case "required": return "Вы забыли заполнить обязательное поле"
+		case "fixlength": return "В это поле необходимо ввести ровно " + e.fixlength + " символов"
+		case "minlength": return "Минимальная длина — " + e.minlength + " символов"
+		case "maxlength": return "Максимальная длина — " + e.maxlength + " символов"
+		default: return "Некорректное значение"
+	}
+	
+}
+
+FormValues.prototype.validated = function () {
+	let err = this._validation_errors;
+	if (!err) return this
+	let e = err [0]
+	die (e.name, this.get_validation_message (e))
 }
 
 FormValues.prototype.not_null = function (name, msg) {
@@ -1275,25 +1337,10 @@ FormValues.prototype.match = function (name, re, msg) {
 
 function values (jq) {
 
+	let errors = []
+
     var o = {}
-
-    $('input[required]', jq).each (function () {
-        var me = $(this)
-        if (me.val ()) return true
-        me.focus ()
-        alert ('Вы забыли заполнить обязательное поле')
-        throw 'core.ok.validation_error'
-    })
-
-    $('input[pattern]', jq).each (function () {
-        var me = $(this)
-        var re = new RegExp (me.attr ('pattern'));
-        if (re.test (me.val ())) return true
-        me.focus ()
-        alert ('Введено недопустимое значение')
-        throw 'core.ok.validation_error'
-    })
-
+    
     var form = jq.prop ("tagName") == 'FORM' ? jq : $('form', jq)
 
     if (!form.length) form = jq.clone ().wrap ('<form/>').parent ()
@@ -1315,7 +1362,7 @@ function values (jq) {
         o[this.name] = $(this).prop ('checked') ? 1 : 0
     })
 
-    return new FormValues (o)
+    return new FormValues (o, jq)
 
 }
 
