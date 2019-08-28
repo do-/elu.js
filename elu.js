@@ -1289,13 +1289,20 @@ function FormValues (o, jq) {
 			let mm  = min || max
 			
 			if (mm) {
-			
+
 				if (/^\d{4}\-\d{2}\-\d{2}$/.test (mm)) {
 					
 					if (min && v < min) err.push ({name, error: 'min', type: 'date', min})
 
 					if (max && v > max) err.push ({name, error: 'max', type: 'date', max})
 				
+				}
+				else if (!isNaN (mm)) {
+
+					if (min && parseFloat (v) < parseFloat (min)) err.push ({name, error: 'min', min})
+
+					if (max && parseFloat (v) > parseFloat (max)) err.push ({name, error: 'max', max})
+
 				}
 			
 			}
