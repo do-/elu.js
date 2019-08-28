@@ -730,6 +730,8 @@ function fill (jq, data, target) {
 			set ('maxlength', f.COLUMN_SIZE)
 			set ('minlength', f.MIN_LENGTH)
 			set ('pattern', f.PATTERN)
+			set ('min', f.MIN)
+			set ('max', f.MAX)
 		
 		})
     
@@ -1272,8 +1274,6 @@ function FormValues (o, jq) {
 		}
 		else {
 
-			let s = '' + v
-
 			let maxlength = $this.attr ('maxlength') 
 			if (maxlength && v.length > maxlength) err.push ({name, error: 'maxlength', maxlength})
 
@@ -1284,10 +1284,26 @@ function FormValues (o, jq) {
 				{name, error: 'minlength', minlength}
 			)
 
+			let min = $this.attr ('min') 
+			let max = $this.attr ('max') 
+			let mm  = min || max
+			
+			if (mm) {
+			
+				if (/^\d{4}\-\d{2}\-\d{2}$/.test (mm)) {
+					
+					if (min && v < min) err.push ({name, error: 'min', type: 'date', min})
+
+					if (max && v > max) err.push ({name, error: 'max', type: 'date', max})
+				
+				}
+			
+			}
+
 			let pattern = $this.attr ('pattern')
 			if (pattern && !(new RegExp (pattern)).test (v)) err.push ({name, error: 'pattern', pattern})
 
-		}	
+		}
 				
 	})
 
@@ -1298,11 +1314,34 @@ function FormValues (o, jq) {
 FormValues.prototype.get_validation_message = function (e) {
 
 	switch (e.error) {
+	
 		case "required": return "Вы забыли заполнить обязательное поле"
+		
 		case "fixlength": return "В это поле необходимо ввести ровно " + e.fixlength + " символов"
+		
 		case "minlength": return "Минимальная длина — " + e.minlength + " символов"
+		
 		case "maxlength": return "Максимальная длина — " + e.maxlength + " символов"
-		default: return "Некорректное значение"
+		
+		case "min": switch (e.type) {
+			case "date": return "Эта дата не может быть ранее " + dt_dmy (e.min)
+			default:     return "Значение в этом поле не может быть менее " + e.min		
+		}
+		
+		case "max": switch (e.type) {
+			case "date": return "Эта дата не может быть позднее " + dt_dmy (e.max)
+			default:     return "Значение в этом поле не может превышать " + e.max
+		}
+		
+		case "min": switch (e.type) {
+			case "date": return "Эта дата не может быть ранее " + dt_dmy (e.min)
+			default:     return "Значение в этом поле не может быть менее " + e.min
+		}
+
+		default: 
+			darn (e)
+			return "Некорректное значение"
+
 	}
 	
 }
