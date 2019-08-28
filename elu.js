@@ -1258,18 +1258,21 @@ function FormValues (o, jq) {
 	if (!jq) return
 	
 	let err = []
+	let inactual = {}
 	
 	$('input, textarea', jq).each (function () {
 	
-		let name = this.name
+		let name = this.name; if (!name) return
 		
 		let v = o [name]
 
 		let $this = $(this)		
+
+		if (this.type != 'hidden' && !$this.is (":visible")) inactual [name] = 1
 		
 		if (v == null) {
 
-			if ($this.attr ('required') && $this.is (":visible")) err.push ({name, error: 'required'})
+			if ($this.attr ('required')) err.push ({name, error: 'required'})
 
 		}
 		else {
@@ -1315,7 +1318,32 @@ function FormValues (o, jq) {
 	})
 
 	if (err.length > 0) this._validation_errors = err
+
+	if (Object.keys (inactual).length > 0) this._inactual_fields = inactual
 	
+}
+
+FormValues.prototype.actual = function () {
+
+	let inactual = this._inactual_fields; if (!inactual) return this
+
+	for (let k in inactual) this [k] = null
+
+	delete this._inactual_fields
+
+	if (!this._validation_errors) return this
+
+	let err = this._validation_errors.filter (e => !inactual [e.name])
+
+	if (err.length) {
+		this._validation_errors = err
+	}
+	else {
+		delete this._validation_errors
+	}
+
+	return this
+
 }
 
 FormValues.prototype.get_validation_message = function (e) {
