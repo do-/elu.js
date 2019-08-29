@@ -722,8 +722,14 @@ function fill (jq, data, target) {
 			let f = _fields [this.name]; 
 
 			if (!f) return
-		
+			
 			let $this = $(this)
+
+			if (this.tagName == 'INPUT' && !$this.is ('[type]')) switch (f.TYPE) {
+				case 'date':
+					$this.attr ('type', 'date')
+				break
+			}
 			
 			function set (k, v) {if (v != null && $this.attr (k) == null) $this.attr (k, v)}
 			
