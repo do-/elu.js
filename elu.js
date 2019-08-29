@@ -737,9 +737,23 @@ function fill (jq, data, target) {
 
 			}
 			
+			let maxlength = f.COLUMN_SIZE
+
+			if ($this.attr ('type') == 'number') {
+
+				if (!('MIN' in f)) f.MIN = "0"
+
+				if (maxlength && !$this.attr ('maxlength')) {
+					let d = f.MIN.charAt (0) == '-' ? 1 : 0
+					if (/^0\./.test ($this.attr ('step'))) d ++
+					if (d > 0) maxlength = d + parseInt (maxlength)
+				}
+
+			}
+
 			function set (k, v) {if (v != null && $this.attr (k) == null) $this.attr (k, v)}
-			
-			set ('maxlength', f.COLUMN_SIZE)
+
+			set ('maxlength', maxlength)
 			set ('minlength', f.MIN_LENGTH)
 			set ('pattern', f.PATTERN)
 			set ('min', f.MIN)
