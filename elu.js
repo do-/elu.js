@@ -865,6 +865,14 @@ $.fn.setup_buttons = function () {
 
 }
 
+$.fn.visibleText = function () {
+    var t = this.clone ().appendTo ($(body))
+    $('*:hidden', t).remove ()
+    var txt = t.text ()
+    t.remove ()
+    return txt
+}
+
 $.fn.slideAsNeeded = function (is, o) {
 
     var was = this.css ('display') != 'none'
