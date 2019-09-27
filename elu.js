@@ -713,10 +713,10 @@ function fill (jq, data, target) {
 
     })
 
-    $(textInputs, jq).each (function () {$(this).val (data [this.name])})
-    
+    $(textInputs, jq).each (function () { if (this.name) $(this).val (data [this.name]) })
+
     let _fields = data._fields; if (_fields) {
-    
+
 		$('input:text, input:password, textarea', jq).each (function () {
 			
 			let f = _fields [this.name]; 
