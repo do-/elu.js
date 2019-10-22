@@ -1293,6 +1293,7 @@ function FormValues (o, jq) {
 	
 	let err = []
 	let inactual = {}
+    let fields = o._fields || {}
 	
 	$('input, textarea', jq).each (function () {
 	
@@ -1300,9 +1301,12 @@ function FormValues (o, jq) {
 		
 		let v = o [name]
 
+        let field = fields[name]
+        let type = field? field.type : this.type
+
 		let $this = $(this)		
 
-		if (this.type != 'hidden' && !$this.is (":visible")) inactual [name] = 1
+		if (type != 'hidden' && !$this.is (":visible")) inactual [name] = 1
 		
 		if (v == null) {
 
@@ -1310,6 +1314,10 @@ function FormValues (o, jq) {
 
 		}
 		else {
+
+            if (type == 'date' && !/^\d{4}-\d{2}-\d{2}$/.test (v)) {
+                err.push ({name, error: 'date_pattern'})
+            }
 
 			let maxlength = $this.attr ('maxlength') 
 			if (maxlength && v.length > maxlength) err.push ({name, error: 'maxlength', maxlength})
