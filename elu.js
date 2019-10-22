@@ -1293,8 +1293,9 @@ function FormValues (o, jq) {
 	
 	let err = []
 	let inactual = {}
-    let fields = o._fields || {}
-	
+    let fields = this._fields || {}
+    delete this._fields
+
 	$('input, textarea', jq).each (function () {
 	
 		let name = this.name; if (!name) return
