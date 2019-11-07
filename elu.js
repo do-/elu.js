@@ -683,7 +683,7 @@ function fill (jq, data, target) {
 
     clickOn ($('span.anchor', jq), onDataUriDblClick)
 
-    var textInputs = 'input:text, input[type=hidden], input[type=number], input[type=range], input:password, textarea, select'
+    var textInputs = 'input:text, input[type=hidden], input[type=number], input[type=range], input[type=email], input:password, textarea, select'
 
     if (data._can) {
         $('button[name]', jq).each (function () {
