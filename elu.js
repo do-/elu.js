@@ -713,6 +713,8 @@ function fill (jq, data, target) {
 
     })
 
+    $('input[required]:not([placeholder])', jq).each (function () {$(this).attr ('placeholder', ' ')})
+    
     $(textInputs, jq).each (function () { if (this.name) $(this).val (data [this.name]) })
 
     let _fields = data._fields; if (_fields) {
@@ -752,7 +754,7 @@ function fill (jq, data, target) {
 			}
 
 			function set (k, v) {if (v != null && $this.attr (k) == null) $this.attr (k, v)}
-
+			
 			set ('maxlength', maxlength)
 			set ('minlength', f.MIN_LENGTH)
 			set ('pattern', f.PATTERN)
@@ -1302,8 +1304,10 @@ function FormValues (o, jq) {
 		
 		let v = o [name]
 
-        let field = fields[name]
-        let type = field? field.type : this.type
+		if (v === '') v = null
+
+        let field = fields [name]
+        let type = field ? field.type : this.type
 
 		let $this = $(this)		
 
@@ -1464,7 +1468,10 @@ function values (jq) {
 
     var a = form.serializeArray ()
 
-    for (var i = 0; i < a.length; i ++) o[a[i].name] = a[i].value.trim ()
+	for (let nv of form.serializeArray ()) {
+		let v = nv.value.trim ()
+		o [nv.name] = v === '' ? null : v
+	}
 
     $('input[type=password]', jq).each (function () {
         if (!$_REQUEST._secret) $_REQUEST._secret = []
