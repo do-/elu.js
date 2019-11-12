@@ -308,6 +308,24 @@ use.js = async function (path) {
     
 }
 
+function recalc_rubber_panels () {
+
+    $("*[height='*']").each (function () {
+    	let $this = $(this)
+    	let s = 0
+    	$this.siblings ().each (function () {s += $(this).height ()})
+		$this.css ('height', 'calc(100% - ' + s + 'px)')
+    })
+    
+    $("*[width='*']").each (function () {
+    	let $this = $(this)
+    	let s = 0
+    	$this.siblings ().each (function () {s += $(this).width ()})
+		$this.css ('width', 'calc(100% - ' + s + 'px)')
+    })
+
+}
+
 async function show_block (name, o) {
     
     if (!o) o = {}
@@ -328,6 +346,8 @@ async function show_block (name, o) {
     $('*', view).attr ('data-block-name', name)
 
     view.setup_buttons ()
+    
+    recalc_rubber_panels ()
 
     return view
 
