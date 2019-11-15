@@ -1503,10 +1503,11 @@ function values (jq) {
     if (!form.length) form = jq.clone ().wrap ('<form/>').parent ()
 
     var a = form.serializeArray ()
+    
+    let or_null = (v) => v === '' ? null : v
 
 	for (let nv of form.serializeArray ()) {
-		let v = nv.value.trim ()
-		o [nv.name] = v === '' ? null : v
+		o [nv.name] = or_null (nv.value.trim ())
 	}
 
     $('input[type=password]', jq).each (function () {
@@ -1515,7 +1516,7 @@ function values (jq) {
     })
 
     $('select', jq).each (function () {
-        o[this.name] = $(this).val ()
+        o[this.name] = or_null ($(this).val ())
     })
 
     $('input[type=checkbox]', jq).each (function () {
