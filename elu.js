@@ -1509,6 +1509,10 @@ FormValues.prototype.match = function (name, re, msg) {
 	die (name, msg)
 }
 
+function or_null (v) {
+	return v === '' ? null : v
+}
+
 function values (jq) {
 
 	let errors = []
@@ -1520,8 +1524,6 @@ function values (jq) {
     if (!form.length) form = jq.clone ().wrap ('<form/>').parent ()
 
     var a = form.serializeArray ()
-    
-    let or_null = (v) => v === '' ? null : v
 
 	for (let nv of form.serializeArray ()) {
 		o [nv.name] = or_null (nv.value.trim ())
