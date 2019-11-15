@@ -735,25 +735,15 @@ function fill (jq, data, target) {
 
     $('input[required]:not([placeholder])', jq).each (function () {$(this).attr ('placeholder', ' ')})
     
-    $(textInputs, jq).each (function () { 
+    $('select', jq).each (function () {     
+    	let o = this.options; if (!o.length) return    	
+    	let o0 = o [0]; if (o0.value == o0.label) o0.value = ''
+    })    
     
-    	if (!this.name) return
-    	
-    	let v = data [this.name]
-    	
-    	if (v != null) {
-	    	$(this).val (v)
-    	}
-    	else if (this.tagName == 'SELECT') {
-
-    		let o = this.options; if (o.length > 0) {
-
-    			let o0 = o [0]; if (o0.value == o0.label) o0.selected = true
-    			
-    		}
-
-    	}
-
+    $(textInputs, jq).each (function () {     
+    	if (!this.name) return    	
+    	let v = data [this.name]    	
+		$(this).val (v == null ? '' : v)
     })
 
     let _fields = data._fields; if (_fields) {
