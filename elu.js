@@ -644,6 +644,8 @@ function fill (jq, data, target) {
     eachAttr (jq, 'data-text',   data, function (me, n, v) {
 
         if (v == null) v = me.attr ('data-default') || ''
+        
+        let voc = me.attr ('data-voc'); if (voc) v = data [voc] [v] || ''
 
         var dig = me.attr ('data-digits')
 
