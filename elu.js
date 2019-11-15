@@ -798,7 +798,7 @@ function fill (jq, data, target) {
 						
 			let txt = $this.text ().trim ()
 			
-			if (txt == '' || txt == $this.children ().text ().trim ()) {
+			if (txt == '' || txt == $('select', $this).text ().trim ()) {
 
 				let name = this.control != null ? this.control.name : $this.attr ('for')
 
