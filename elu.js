@@ -782,6 +782,16 @@ function fill (jq, data, target) {
 			set ('max', f.MAX)
 		
 		})
+		
+		$('label', jq).each (function () {
+
+			let $this = $(this); if ($this.text ().trim () != '') return
+
+			let name = this.control != null ? this.control.name : $this.attr ('for')
+
+			let field = _fields [name]; if (field) $('<span>').text (field.REMARK).prependTo ($this)
+
+		})
     
     }
         
