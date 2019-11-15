@@ -713,6 +713,12 @@ function fill (jq, data, target) {
     
     jq.setup_buttons ()        
 
+	$('option[data-list]', jq).each (function () {
+		let $this = $(this)
+		if (!$this.attr ('data-text')) $this.attr ('data-text', 'label')
+		if (!$this.attr ('data-value')) $this.attr ('data-value', 'id')
+	})
+
     eachAttr (jq, 'data-list', data, function (me, n, v) {
 
             if (!v) {
