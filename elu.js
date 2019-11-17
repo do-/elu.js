@@ -645,7 +645,10 @@ function fill (jq, data, target) {
 
         if (v == null) v = me.attr ('data-default') || ''
         
-        let voc = me.attr ('data-voc'); if (voc) v = data [voc] [v] || ''
+        let voc = me.attr ('data-voc'); if (voc) {
+        	let h = data [voc]
+        	if (h) v = h [v] || ''; else darn (['data-voc not defined', data, jq])
+        }
 
         var dig = me.attr ('data-digits')
 
