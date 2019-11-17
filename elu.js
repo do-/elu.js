@@ -604,6 +604,7 @@ function query (tia, data, done, fail) {
 }
 
 function refill (data, target) {
+	$('*[data-list-item]', target).remove ()
     target.replaceWith (fill (target, data))
 }
 
@@ -636,6 +637,11 @@ async function to_fill (name, data, target) {
 }
 
 function fill (jq, data, target) {
+
+	if ($("style:contains('data-list-template')").length == 0) 
+		$('<style>')
+			.text ('*[data-list-template]{display:none!important}')
+				.appendTo ($('head'))
 
     jq = jq.clone ()
 
@@ -726,21 +732,15 @@ function fill (jq, data, target) {
 
     eachAttr (jq, 'data-list', data, function (me, n, v) {
 
-            if (!v) {
-                console.log ('Empty value as data-list in ' + me.get(0).outerHTML, data, n)
-                me.remove ()
-                return
-            }
+        if (!v || !$.isArray (v)) return me.remove ()
+        
+        let tmp = me.clone ().attr ('data-list-template', 1)
 
-            if (!$.isArray (v)) {
-                console.log ('Not a list as data-list for ' + me.get(0).outerHTML + ': ', v)
-                me.remove ()
-                return
-            }
+        var list = $([]).add (tmp)
 
-            var list = $([]); for (var i = 0; i < v.length; i ++) list = list.add (fill (me.clone ().removeAttr ('data-list'), v [i]))
+        for (var i = 0; i < v.length; i ++) list = list.add (fill (tmp, v [i]).attr ('data-list-item', 1).removeAttr ('data-list').removeAttr ('data-list-template'))
 
-            me.replaceWith (list)
+        me.replaceWith (list)
 
     })
 
