@@ -482,6 +482,9 @@ $_DO.apologize = function (o, fail) {
             $_USER = undefined
             location.reload ()
         }
+        else if (jqXHR.status == 403) {
+            alert ('Доступ запрещён')
+        }
         else if (jqXHR.status == 413) {
             alert ('Вы пытаетесь передать слишком большой объём данных: вероятно, файл недопустимой величины')
         }
