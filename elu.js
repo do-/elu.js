@@ -1365,9 +1365,9 @@ function FormValues (o, jq) {
         let field = fields [name]
         let type = field ? field.type : this.type
 
-		let $this = $(this)		
+		let $this = $(this)
 
-		if (type != 'hidden' && !$this.is (":visible")) inactual [name] = 1
+		if (type != 'hidden' && !$this.is (":visible") && $this.closest ('*[data-list-template]').length == 0) inactual [name] = 1
 		
 		if (v == null) {
 
