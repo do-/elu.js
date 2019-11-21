@@ -203,7 +203,7 @@ if ($_USER) $_SESSION.set ('user', $_USER)
 
 function en_unplural (s) {
 
-    if (s.match (/(status|goods)$/)) return s
+    if (s.match (/(status|goods|basis)$/)) return s
 
     var table = [
         [/tives$/,          'tive'],
