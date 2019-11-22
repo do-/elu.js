@@ -417,16 +417,21 @@ function download (tia, data, o) {
 
     .done (function (data, textStatus, jqXHR) {
 
-        var fn = '1.bin';
+        data.saveAs (decodeURIComponent (
+        
+			((cd) => {if (!cd) return null
 
-        var cd = jqXHR.getResponseHeader (  'Content-Disposition')
+				let p = cd.split (/;\s*/);         if (p.length < 2 || p [0] != 'attachment') return null
 
-        var pre = 'attachment;filename='
-        var prelen = pre.length
+				let [h, t] = p.pop ().split ('='); if (!t) return null
 
-        if (cd && cd.substr (0, prelen) == pre) fn = decodeURIComponent (cd.substr (prelen))
+				if (t.indexOf ("UTF-8''") == 0) return t.slice (7)
 
-        data.saveAs (fn);
+				return t.replace (/(^"|"$)/g, '')
+
+			}) (jqXHR.getResponseHeader ('Content-Disposition')) || '1.bin'
+        
+        ))
 
     })
     .fail (function (jqXHR, e) {
