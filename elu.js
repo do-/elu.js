@@ -1362,7 +1362,7 @@ function FormValues (o, jq) {
     let fields = this._fields || {}
     delete this._fields
 
-	$('input, textarea', jq).each (function () {
+	$('input, textarea, select', jq).each (function () {
 	
 		let name = this.name; if (!name) return
 		
