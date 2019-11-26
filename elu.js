@@ -1552,6 +1552,10 @@ function values (jq) {
     $('input[type=checkbox]', jq).each (function () {
         o[this.name] = $(this).prop ('checked') ? 1 : 0
     })
+    
+    $('input[type=file]', jq).each (function () {
+        o[this.name] = this.files [0]
+    })
 
     return new FormValues (o, jq)
 
