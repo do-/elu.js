@@ -813,15 +813,15 @@ function fill (jq, data, target) {
 		
 		$('label', jq).each (function () {
 
-			let $this = $(this); 
-						
+			let $this = $(this)
+			
+			if (!$this.attr ('for') && this.control) $this.attr ('for', this.control.name)
+
 			let txt = $this.text ().trim ()
 			
 			if (txt == '' || txt == $('select', $this).text ().trim ()) {
 
-				let name = this.control != null ? this.control.name : $this.attr ('for')
-
-				let field = _fields [name]; if (field) $('<span>').text (field.REMARK).prependTo ($this)
+				let field = _fields [$this.attr ('for')]; if (field) $('<span>').text (field.REMARK).prependTo ($this)
 
 			}
 
