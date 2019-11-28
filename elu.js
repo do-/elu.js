@@ -776,11 +776,13 @@ function fill (jq, data, target) {
 			let $this = $(this)
 
 			if (this.tagName == 'INPUT' && !$this.is ('[type]')) {
+			
+				let type = f.TYPE || f.TYPE_NAME
 
-				if (f.TYPE == 'date') {
+				if (/^date$/i.test (type)) {
 					$this.attr ('type', 'date')
 				}
-				else if (/^(int|num)/.test (f.TYPE)) {
+				else if (/^(int|num)/.test (type)) {
 					$this.attr ('type', 'number')
 					if (f.DECIMAL_DIGITS) $this.attr ('step', '0.' + '0'.repeat (f.DECIMAL_DIGITS - 1) + '1')
 				}
