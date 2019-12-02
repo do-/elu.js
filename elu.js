@@ -398,9 +398,21 @@ function dynamicURL (tia, postfix) {
 
     if (tia.type && !('id' in tia) && $_REQUEST.id) tia.id = $_REQUEST.id
     
-    for (let k of ['id', 'action', 'part']) if (tia [k] == null) delete tia [k]
+    let url = sessionStorage.getItem ('dynamicRoot')
+    
+    if (postfix != null) url += postfix
+    
+    url += '/'
+    
+    let c = '?'
+    
+    for (let k of ['type', 'id', 'action', 'part']) {
+    	let v = tia [k]; if (v == null) continue
+    	url += `${c}${k}=${v}`
+    	c = '&'
+    }
 
-    return sessionStorage.getItem ('dynamicRoot') + (postfix || '') + '/?' + $.param (tia)
+	return url
 
 }
 
