@@ -390,13 +390,15 @@ function staticURL (path) {return sessionStorage.getItem ('staticRoot') + '/' + 
 function dynamicURL (tia, postfix) {
 
     if ('type' in tia) {
-        if (!tia.type) tia = {}    // empty request for keep-alive
+        if (tia.type == null) tia = {}    // empty request for keep-alive
     }
     else {
         tia.type = $_REQUEST.type
     }
 
     if (tia.type && !('id' in tia) && $_REQUEST.id) tia.id = $_REQUEST.id
+    
+    for (let k of ['id', 'action', 'part']) if (tia [k] == null) delete tia [k]
 
     return sessionStorage.getItem ('dynamicRoot') + (postfix || '') + '/?' + $.param (tia)
 
