@@ -1032,7 +1032,12 @@ function xslTransform (doc, done, name) {
 
         var xsltProcessor = new XSLTProcessor ();
 
-        xsltProcessor.importStylesheet ($.parseXML (responseText))
+        try {
+	        xsltProcessor.importStylesheet (responseText)
+        }
+        catch (x) {
+	        xsltProcessor.importStylesheet ($.parseXML (responseText))
+        }
 
         var s = (new XMLSerializer ()).serializeToString (xsltProcessor.transformToDocument (doc))
 
