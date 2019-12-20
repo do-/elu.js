@@ -1569,9 +1569,23 @@ function values (jq) {
     $('select', jq).each (function () {
         o[this.name] = or_null ($(this).val ())
     })
+    
+    let cb = {}
 
     $('input[type=checkbox]', jq).each (function () {
-        o[this.name] = $(this).prop ('checked') ? 1 : 0
+    
+    	let name = this.name; if (!name) return
+    	
+    	let $this = $(this)
+    	
+    	let checked = $this.prop ('checked') ? 1 : 0
+    	
+    	if (!$this.is ('[value]')) return o [name] = checked
+    	
+   		if (!cb.name) cb.name = o [name] = []
+
+   		if (checked) o [name].push (this.value)
+
     })
     
     $('input[type=file]', jq).each (function () {
