@@ -1314,7 +1314,7 @@ function __d (data) {
 
 function die (name, text) {
     alert (text)
-    $('[name=' + name + ']').focus ()
+    $('[name=' + name + ']').first ().focus ()
     throw 'core.ok.validation'
 }
 
