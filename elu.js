@@ -481,7 +481,15 @@ var $_F5 = function (data) {
 
 $_DO.apologize = function (o, fail) {
 
-    if (fail) return fail (o)
+    if (fail) {
+    
+    	if (typeof fail === 'function') fail = {todo: [fail], break: true}
+    	
+    	for (let t of fail.todo) t (o, fail)
+    	
+    	if (fail.break) return
+    
+    }
 
     if (o.data) {
         var data = o.data
@@ -558,7 +566,7 @@ function jerk (tia, data, then) {
 async function response (tia, data) {
 
     return new Promise (function (resolve, reject) {    
-        query (tia, data, resolve)    
+        query (tia, data, resolve, {todo: [reject]})
     })        
 
 }
