@@ -1401,30 +1401,33 @@ function FormValues (o, jq) {
 
         let field = fields [name]
         let type = field ? field.type : this.type
-
+        
 		let $this = $(this)
+
+        let $label = $('label[for=' + name + ']', jq)
+        let title = $label.attr ('title') || $label.text () || $this.attr ('title')
 
 		if (type != 'hidden' && !$this.is (":visible") && $this.closest ('*[data-list-template]').length == 0) inactual [name] = 1
 		
 		if (v == null) {
 
-			if ($this.attr ('required')) err.push ({name, error: 'required'})
+			if ($this.attr ('required')) err.push ({name, title, error: 'required'})
 
 		}
 		else {
 
             if (type == 'date' && !/^\d{4}-\d{2}-\d{2}$/.test (v)) {
-                err.push ({name, error: 'date_pattern'})
+                err.push ({name, title, error: 'date_pattern'})
             }
 
 			let maxlength = $this.attr ('maxlength') 
-			if (maxlength && v.length > maxlength) err.push ({name, error: 'maxlength', maxlength})
+			if (maxlength && v.length > maxlength) err.push ({name, title, error: 'maxlength', maxlength})
 
 			let minlength = $this.attr ('minlength') 
 			if (minlength && v.length < minlength) err.push (
 				maxlength && maxlength == minlength ? 
-				{name, error: 'fixlength', fixlength: minlength} : 
-				{name, error: 'minlength', minlength}
+				{name, title, error: 'fixlength', fixlength: minlength} : 
+				{name, title, error: 'minlength', minlength}
 			)
 
 			let min = $this.attr ('min') 
@@ -1435,23 +1438,23 @@ function FormValues (o, jq) {
 
 				if (/^\d{4}\-\d{2}\-\d{2}$/.test (mm)) {
 					
-					if (min && v < min) err.push ({name, error: 'min', type: 'date', min})
+					if (min && v < min) err.push ({name, title, error: 'min', type: 'date', min})
 
-					if (max && v > max) err.push ({name, error: 'max', type: 'date', max})
+					if (max && v > max) err.push ({name, title, error: 'max', type: 'date', max})
 				
 				}
 				else if (!isNaN (mm)) {
 
-					if (min && parseFloat (v) < parseFloat (min)) err.push ({name, error: 'min', min})
+					if (min && parseFloat (v) < parseFloat (min)) err.push ({name, title, error: 'min', min})
 
-					if (max && parseFloat (v) > parseFloat (max)) err.push ({name, error: 'max', max})
+					if (max && parseFloat (v) > parseFloat (max)) err.push ({name, title, error: 'max', max})
 
 				}
 			
 			}
 
 			let pattern = $this.attr ('pattern')
-			if (pattern && !(new RegExp (pattern)).test (v)) err.push ({name, error: 'pattern', pattern})
+			if (pattern && !(new RegExp (pattern)).test (v)) err.push ({name, title, error: 'pattern', pattern})
 
 		}
 				
@@ -1486,38 +1489,93 @@ FormValues.prototype.actual = function () {
 
 }
 
+$_DO.outspeak = {
+
+	required: (e) => {
+	
+		if (e.title) return "Вы забыли указать " + e.title
+	
+		return "Вы забыли заполнить обязательное поле"
+	
+	},
+
+	pattern: (e) => {
+	
+		if (e.title) return "Проверьте, пожалуйста, корректность заполнения поля " + e.title
+	
+		return "Проверьте, пожалуйста, корректность заполнения данного поля"
+	
+	},
+
+	fixlength: (e) => {
+	
+		if (e.title) return `Поле "${e.title}" должно содержать ровно ${e.fixlength} символов`
+	
+		return "В это поле необходимо ввести ровно " + e.fixlength + " символов"
+	
+	},
+
+	minlength: (e) => {
+	
+		if (e.title) return `${e.title} не может содержать менее ${e.minlength} символов`
+	
+		return "Минимальная длина — " + e.minlength + " символов"
+	
+	},
+
+	maxlength: (e) => {
+	
+		if (e.title) return `${e.title} не может содержать более ${e.maxlength} символов`
+	
+		return "Минимальная длина — " + e.maxlength + " символов"
+	
+	},
+	
+	min_date: (e) => {
+	
+		if (e.title) return `${e.title} не может быть ранее ${dt_dmy (e.min)}`
+	
+		return "Эта дата не может быть ранее " + dt_dmy (e.min)
+
+	},
+
+	max_date: (e) => {
+	
+		if (e.title) return `${e.title} не может быть позднее ${dt_dmy (e.max)}`
+	
+		return "Эта дата не может быть позднее " + dt_dmy (e.max)
+
+	},
+	
+	min: (e) => {
+	
+		if (e.title) return `${e.title} не может быть менее ${e.min}`
+	
+		return "Это значение не может быть менее " + e.min
+
+	},
+
+	max: (e) => {
+	
+		if (e.title) return `${e.title} не может быть более ${e.max}`
+	
+		return "Это значение не может быть более " + e.max
+
+	},
+
+}
+
 FormValues.prototype.get_validation_message = function (e) {
 
-	switch (e.error) {
+	let k = e.error
 	
-		case "required": return "Вы забыли заполнить обязательное поле"
-		
-		case "fixlength": return "В это поле необходимо ввести ровно " + e.fixlength + " символов"
-		
-		case "minlength": return "Минимальная длина — " + e.minlength + " символов"
-		
-		case "maxlength": return "Максимальная длина — " + e.maxlength + " символов"
-		
-		case "min": switch (e.type) {
-			case "date": return "Эта дата не может быть ранее " + dt_dmy (e.min)
-			default:     return "Значение в этом поле не может быть менее " + e.min		
-		}
-		
-		case "max": switch (e.type) {
-			case "date": return "Эта дата не может быть позднее " + dt_dmy (e.max)
-			default:     return "Значение в этом поле не может превышать " + e.max
-		}
-		
-		case "min": switch (e.type) {
-			case "date": return "Эта дата не может быть ранее " + dt_dmy (e.min)
-			default:     return "Значение в этом поле не может быть менее " + e.min
-		}
-
-		default: 
-			darn (e)
-			return "Некорректное значение"
-
-	}
+	if (e.type == 'date') switch (k) {
+		case 'min':
+		case 'max':
+			k += '_date'
+	} 
+	
+	return $_DO.outspeak [k] (e)
 	
 }
 
