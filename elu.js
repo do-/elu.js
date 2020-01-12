@@ -804,9 +804,9 @@ function fill (jq, data, target) {
 				if (/^date$/i.test (type)) {
 					$this.attr ('type', 'date')
 				}
-				else if (/^(int|num)/.test (type)) {
+				else if (/^(int|num|dec)/.test (type.toLowerCase ())) {
 					$this.attr ('type', 'number')
-					if (f.DECIMAL_DIGITS) $this.attr ('step', '0.' + '0'.repeat (f.DECIMAL_DIGITS - 1) + '1')
+					$this.attr ('step', !f.DECIMAL_DIGITS ? 1 : '0.' + '0'.repeat (f.DECIMAL_DIGITS - 1) + '1')
 				}
 
 			}
@@ -826,6 +826,8 @@ function fill (jq, data, target) {
 			}
 
 			function set (k, v) {if (v != null && $this.attr (k) == null) $this.attr (k, v)}
+			
+			if (f.MAX == 'NOW') f.MAX = (new Date ()).toJSON ().slice (0, 10)
 			
 			set ('maxlength', maxlength)
 			set ('minlength', f.MIN_LENGTH)
