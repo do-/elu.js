@@ -1408,6 +1408,7 @@ function FormValues (o, jq) {
 
         let $label = $('label[for=' + name + ']', jq)
         let title = $label.attr ('title') || $label.text () || $this.attr ('title')
+        if (title) title = title.replace (/\s+/gsm, ' ').trim ()
 
 		if (type != 'hidden' && !$this.is (":visible") && $this.closest ('*[data-list-template]').length == 0) inactual [name] = 1
 		
