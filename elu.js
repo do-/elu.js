@@ -1406,7 +1406,7 @@ function FormValues (o, jq) {
         
 		let $this = $(this)
 
-        let $label = $('label[for=' + name + ']', jq)
+        let $label = $('label[for="' + name + '"]', jq)
         let title = $label.attr ('title') || $label.text () || $this.attr ('title')
         if (title) title = title.replace (/\s+/gsm, ' ').trim ()
 
@@ -1530,7 +1530,7 @@ $_DO.outspeak = {
 	
 		if (e.title) return `${e.title} не может содержать более ${e.maxlength} символов`
 	
-		return "Минимальная длина — " + e.maxlength + " символов"
+		return "Максимальная длина — " + e.maxlength + " символов"
 	
 	},
 	
