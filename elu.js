@@ -786,7 +786,12 @@ function fill (jq, data, target) {
     	let v = data [this.name]    	
 		$(this).val (v == null ? '' : v)
     })
-
+    
+    $('progress', jq).each (function () {
+    	let name = $(this).attr ('name')
+    	if (name in data) $(this).attr ('value', data [name])
+    })
+    
     let _fields = data._fields; if (_fields) {
 
 		$('input:text, input[type=date], input:password, textarea', jq).each (function () {
