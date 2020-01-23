@@ -406,7 +406,8 @@ function dynamicURL (tia, postfix) {
     
     let c = '?'
     
-    for (let k of ['type', 'id', 'action', 'part']) {
+    for (let k in tia) {
+        if (!['type', 'id', 'action', 'part'].includes(k)) throw 'Unexpected key "' + k + '", available keys: type, id, action, part'
     	let v = tia [k]; if (v == null) continue
     	url += `${c}${k}=${v}`
     	c = '&'
