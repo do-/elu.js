@@ -1671,4 +1671,31 @@ function values (jq) {
 
 }
 
+function flatten (o, pre = '') {
+	
+	if (pre) pre += '.'
+	
+	let r = {}; for (let k in o) {
+
+		let v = o [k]; if (v == null || typeof v != 'object') {
+
+			r [pre + k] = o [k]
+
+		}
+		else {
+		
+			let pp = pre + k
+
+			Object.assign (r, flatten (v, pp))
+			
+			if (Array.isArray (v)) r [pp + '.length'] = v.length
+
+		}
+
+	}
+	
+	return r
+
+}
+
 1;
