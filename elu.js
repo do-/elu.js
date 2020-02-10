@@ -406,7 +406,8 @@ function dynamicURL (tia, postfix) {
     
     let c = '?'
     
-    for (let k of ['type', 'id', 'action', 'part']) {
+    for (let k in tia) {
+        if (!['type', 'id', 'action', 'part'].includes(k)) throw 'Unexpected key "' + k + '", available keys: type, id, action, part'
     	let v = tia [k]; if (v == null) continue
     	url += `${c}${k}=${v}`
     	c = '&'
@@ -786,7 +787,12 @@ function fill (jq, data, target) {
     	let v = data [this.name]    	
 		$(this).val (v == null ? '' : v)
     })
-
+    
+    $('progress', jq).each (function () {
+    	let name = $(this).attr ('name')
+    	if (name in data) $(this).attr ('value', data [name])
+    })
+    
     let _fields = data._fields; if (_fields) {
 
 		$('input:text, input[type=date], input:password, textarea', jq).each (function () {
@@ -1662,6 +1668,33 @@ function values (jq) {
     })
 
     return new FormValues (o, jq)
+
+}
+
+function flatten (o, pre = '') {
+	
+	if (pre) pre += '.'
+	
+	let r = {}; for (let k in o) {
+
+		let v = o [k]; if (v == null || typeof v != 'object') {
+
+			r [pre + k] = o [k]
+
+		}
+		else {
+		
+			let pp = pre + k
+
+			Object.assign (r, flatten (v, pp))
+			
+			if (Array.isArray (v)) r [pp + '.length'] = v.length
+
+		}
+
+	}
+	
+	return r
 
 }
 
