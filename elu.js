@@ -1398,19 +1398,24 @@ function FormValues (o, jq) {
 	let inactual = {}
     let fields = this._fields || {}
     delete this._fields
+    
+    let me = this
 
 	$('input, textarea, select', jq).each (function () {
 	
 		let name = this.name; if (!name) return
-		
+
 		let v = o [name]
 
 		if (v === '') v = null
 
-        let field = fields [name]
-        let type = field ? field.type : this.type
-        
 		let $this = $(this)
+
+        let field = fields [name]
+        let type = 
+        	$this.data ('datepicker') ? 'date' :
+        	field ? field.type : 
+        	this.type
 
         let $label = $('label[for="' + name + '"]', jq)
         let title = $label.attr ('title') || $label.text () || $this.attr ('title')
@@ -1424,10 +1429,24 @@ function FormValues (o, jq) {
 
 		}
 		else {
+		
+			if (type == 'date' && !/^\d{4}-\d{2}-\d{2}$/.test (v)) me [name] = v = (() => {
 
-            if (type == 'date' && !/^\d{4}-\d{2}-\d{2}$/.test (v)) {
-                err.push ({name, title, error: 'date_pattern'})
-            }
+				let croak = () => {err.push ({name, title, error: 'pattern_date'}); return v}
+
+				let ymd = v.split (/\D/); if (ymd.length != 3) return croak ()
+
+            	switch (ymd.map (s => s.length).reduce ((s, n) => n + 10 * s, 0)) {  
+
+            		case 224: ymd.reverse ()
+
+            		case 422: return ymd.join ('-')
+
+            		default:  return croak ()
+
+            	}
+			
+			}) ()
 
 			let maxlength = $this.attr ('maxlength') 
 			if (maxlength && v.length > maxlength) err.push ({name, title, error: 'maxlength', maxlength})
@@ -1540,6 +1559,14 @@ $_DO.outspeak = {
 	
 	},
 	
+	pattern_date: (e) => {
+
+		if (e.title) return `Некорректный формат даты в поле ${e.title}`
+
+		return "Некорректный формат даты"
+
+	},
+	
 	min_date: (e) => {
 	
 		if (e.title) return `${e.title} не может быть ранее ${dt_dmy (e.min)}`
@@ -1583,7 +1610,7 @@ FormValues.prototype.get_validation_message = function (e) {
 		case 'max':
 			k += '_date'
 	} 
-	
+
 	return $_DO.outspeak [k] (e)
 	
 }
