@@ -1306,7 +1306,7 @@ function dt_dmy2   (v) {
     return dmy.join ('.')
 }
 
-function dt_dmyhms (v) { return !v ? '' : dt_dmy (v.substr (0, 10)) + v.substr (10,9)}
+function dt_dmyhms (v) { return !v ? '' : dt_dmy (v.substr (0, 10)) + v.substr (10,9).replace('T', ' ')}
 
 function __d (data) {
 
