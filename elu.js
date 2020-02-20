@@ -1417,8 +1417,24 @@ function FormValues (o, jq) {
         	field ? field.type : 
         	this.type
 
-        let $label = $('label[for="' + name + '"]', jq)
-        let title = $label.attr ('title') || $label.text () || $this.attr ('title')
+        let title = ''
+        
+        let $label = $('label[for="' + name + '"]', jq); if ($label.size ()) {
+        
+	        title = $label.attr ('title'); if (!title) {
+	        
+	        	let $c = $label.clone (false)
+	        	
+	        	$('*', $c).remove ()
+	        	
+	        	title = $c.text ()
+	        
+	        }
+
+        }
+        
+        if (!title) title = $this.attr ('title')
+        
         if (title) title = title.replace (/\s+/gm, ' ').trim ()
 
 		if (type != 'hidden' && !$this.is (":visible") && $this.closest ('*[data-list-template]').length == 0) inactual [name] = 1
