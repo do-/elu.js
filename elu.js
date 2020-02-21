@@ -312,6 +312,8 @@ function recalc_rubber_panels () {
 
     $("*[height='*']").each (function () {
     	let $this = $(this)
+        let grid = $this.data('grid')
+        if (grid && grid.getOptions().max_height) return
     	let s = 0
     	$this.siblings ().each (function () {s += $(this).height ()})
 		$this.css ('height', 'calc(100% - ' + s + 'px)')
