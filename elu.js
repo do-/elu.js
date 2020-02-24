@@ -863,7 +863,27 @@ function fill (jq, data, target) {
     
     }
         
-    $('input:radio', jq).each (function () {var me = $(this); me.prop ('checked', me.val () == data [this.name])})
+    $('input:radio', jq).each (function () {
+
+    	let $this = $(this)
+    	
+    	$this.prop ('checked', $this.val () == data [this.name])
+
+    })
+
+    $('input:checkbox', jq).each (function () {
+    
+    	let $this = $(this), v = data [this.name]
+    	
+    	$this.prop ('checked', $this.is ('[value]') ? 
+    	
+    		v && Array.isArray (v) && v.contains (this.value) : 
+
+    		v == 1
+    	
+    	)
+    	
+    })
 
     if (data._read_only) {
 
