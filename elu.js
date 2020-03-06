@@ -1441,7 +1441,7 @@ function FormValues (o, jq) {
 
         let title = ''
         
-        let $label = $('label[for="' + name + '"]', jq); if ($label.size ()) {
+        let $label = $('label[for="' + name + '"]', jq); if ($label.length > 0) {
         
 	        title = $label.attr ('title'); if (!title) {
 	        
