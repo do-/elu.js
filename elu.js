@@ -138,7 +138,7 @@ var $_SESSION = {
 
         var keepAliveTimer;
 
-        $(document).ajaxSuccess (function (event, request, settings) {
+        $(document).ajaxSend (function (event, request, settings) {
 
             var timeout = sessionStorage.getItem ('timeout')
 
