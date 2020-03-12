@@ -134,21 +134,19 @@ var $_SESSION = {
 
     beforeExpiry: function (todo) {
 
-        var keepAliveTimer;
+    	let timeout = $_SESSION.get ('timeout'); if (!timeout) return darn ("$_SESSION: beforeExpiry called with no timeout set")
 
-        $(document).ajaxSend (function () {
+    	const lag = 1000 * (60 * parseInt (timeout) - 10)
 
-            var timeout = sessionStorage.getItem ('timeout')
+        let t = null, reset = () => {
 
-            if (!timeout) return
+            if (t) clearTimeout (t)
 
-            if (timeout < 1) timeout = 1
+            t = setTimeout (todo, lag)
 
-            if (keepAliveTimer) clearTimeout (keepAliveTimer)
+        }
 
-            keepAliveTimer = setTimeout (todo, 1000 * (60 * timeout - 1))
-
-        });
+        reset (); $(document).ajaxSend (reset)
 
     },
 
