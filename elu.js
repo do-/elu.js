@@ -130,15 +130,13 @@ var $_SESSION = {
 
     },
 
-    keepAlive: function () {
-        query ({type: undefined}, {}, $.noop, $.noop)
-    },
+    keepAlive: () => response ({type: null}).catch (darn),
 
     beforeExpiry: function (todo) {
 
         var keepAliveTimer;
 
-        $(document).ajaxSend (function (event, request, settings) {
+        $(document).ajaxSend (function () {
 
             var timeout = sessionStorage.getItem ('timeout')
 
@@ -601,9 +599,9 @@ function query (tia, data, done, fail) {
         headers:     headers
     })
 
-    .done (function (data) {
+    .done (function (data, textStatus, jqXHR) {
 
-        if (data == null) return $_DO.apologize ({}, fail)
+        if (data == null) return jqXHR.status == 204 ? done () : $_DO.apologize ({}, fail)
 
         if (data.success) return done (data.content)
 
