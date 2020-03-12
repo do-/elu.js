@@ -134,13 +134,29 @@ var $_SESSION = {
 
     beforeExpiry: function (todo) {
 
-    	let timeout = $_SESSION.get ('timeout'); if (!timeout) return darn ("$_SESSION: beforeExpiry called with no timeout set")
+    	if (!$_USER) return
+    
+    	let timeout = $_USER._session_timeout; if (!timeout) return darn ("$_SESSION: beforeExpiry called with no timeout set")
 
-    	const lag = 1000 * (60 * parseInt (timeout) - 10)
+    	const lag = 1000 * (60 * parseInt (timeout) - 10), KEY = '_cancel_keep_alive_timer'
 
-        let t = null, reset = () => {
+        let t = null, clear = () => {
 
-            if (t) clearTimeout (t)
+        	if (t) t = clearTimeout (t)
+
+        }
+
+	    window.addEventListener ('storage', e => {
+
+	    	if (e.key == KEY) clear ()
+
+	    })
+
+        reset = () => {
+
+        	$_LOCAL.set (KEY, 1)
+
+        	clear ()
 
             t = setTimeout (todo, lag)
 
@@ -151,11 +167,11 @@ var $_SESSION = {
     },
 
     start: function (user, timeout) {
+    
+    	if (timeout) user._session_timeout = timeout
 
         $_SESSION.set ('user', $_USER = user)
         $_LOCAL.set ('user', user)
-
-        if (timeout) $_SESSION.set ('timeout', timeout < 1 ? 1 : timeout)
 
     },
 
