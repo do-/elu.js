@@ -140,29 +140,23 @@ var $_SESSION = {
 
     	const lag = 1000 * (60 * parseInt (timeout) - 10), KEY = '_cancel_keep_alive_timer'
 
-        let t = null, clear = () => {
+        let t = null, reset = (e) => {
 
-        	if (t) t = clearTimeout (t)
+        	if (e.key != KEY) $_LOCAL.set (KEY, new Date ())
 
-        }
-
-	    window.addEventListener ('storage', e => {
-
-	    	if (e.key == KEY) clear ()
-
-	    })
-
-        reset = () => {
-
-        	$_LOCAL.set (KEY, 1)
-
-        	clear ()
+        	if (t) clearTimeout (t)
 
             t = setTimeout (todo, lag)
 
         }
+        
+	    window.addEventListener ('storage', e => {
 
-        reset (); $(document).ajaxSend (reset)
+	    	if (e.key == KEY) reset (e)
+
+	    })
+
+        reset ({}); $(document).ajaxSend (reset)
 
     },
 
