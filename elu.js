@@ -132,13 +132,31 @@ var $_SESSION = {
 
     keepAlive: () => response ({type: null}).catch (darn),
 
-    beforeExpiry: function (todo) {
+    beforeExpiry: function (todo, lag = 10) {
 
     	if (!$_USER) return
-    
+
     	let timeout = $_USER._session_timeout; if (!timeout) return darn ("$_SESSION: beforeExpiry called with no timeout set")
 
-    	const lag = 1000 * (60 * parseInt (timeout) - 10), KEY = '_cancel_keep_alive_timer'
+    	let int_lag = parseInt (lag); if (!(int_lag > 0)) {
+
+    		darn (`$_SESSION.beforeExpiry: invalid lag = ${lag}; setting lag = 10 s`)
+
+    		int_lag = 10
+
+    	}
+
+    	let period = 1000 * (60 * parseInt (timeout) - int_lag); 
+    	
+    	if (!(period > 0)) {
+    	
+    		darn (`$_SESSION.beforeExpiry: timeout = ${timeout} min, lag = ${lag} s => period = ${period} ms; setting period = 55000 ms`)
+    		
+    		period = 55000
+    	
+    	}
+    	
+    	const KEY = '_cancel_keep_alive_timer'
 
         let t = null, reset = (e) => {
 
@@ -146,7 +164,7 @@ var $_SESSION = {
 
         	if (t) clearTimeout (t)
 
-            t = setTimeout (todo, lag)
+            t = setTimeout (todo, period)
 
         }
         
