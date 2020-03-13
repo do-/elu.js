@@ -1787,4 +1787,22 @@ function flatten (o, pre = '') {
 
 }
 
+async function to_locate (selector) {
+
+	return new Promise (ok => {
+	
+		let timer = setInterval (() => {
+		
+			let $result = $(selector); if (!$result.length) return
+			
+			clearInterval (timer)
+			
+			ok ($result)
+		
+		}, 100)
+	
+	})
+
+}
+
 1;
