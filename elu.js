@@ -786,11 +786,15 @@ function fill (jq, data, target) {
 
     eachAttr (jq, 'data-list', data, function (me, n, v) {
 
-        let el = me.get (0), inner = $(el.tagName == 'TEMPLATE' ? me.html () : el.outerHTML).removeAttr ('data-list')
+        let el = me.get (0)
 
-        let $list = $([]).add ($('<template />').attr ('data-list', n).append (inner))
+        let html = el.tagName == 'TEMPLATE' ? me.html () : el.outerHTML
 
-        if (v) for (let i of v) $list = $list.add (fill (inner, i).attr ('data-list-item', 1))
+        let tmp = $(html).removeAttr ('data-list')
+
+        let $list = $([]).add ($(`<template data-list=${n}>${html}</template>`))
+
+        if (v) for (let i of v) $list = $list.add (fill (tmp, i).attr ('data-list-item', 1))
 
         me.replaceWith ($list)
 
