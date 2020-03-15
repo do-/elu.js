@@ -695,12 +695,9 @@ async function to_fill (name, data, target) {
 
 function fill (jq, data, target) {
 
-	if ($("style:contains('data-list-template')").length == 0) 
-		$('<style>')
-			.text ('*[data-list-template]{display:none!important}')
-				.appendTo ($('head'))
-
     jq = jq.clone ()
+
+    let head = jq.get (0); if (head.tagName == 'TEMPLATE') jq = $(head.content).children ()
 
     if (data.fake == -1) jq.attr ('data-deleted', 1)
 
@@ -789,13 +786,24 @@ function fill (jq, data, target) {
 
     eachAttr (jq, 'data-list', data, function (me, n, v) {
 
-        if (!v || !$.isArray (v)) return me.remove ()
-        
-        let tmp = me.clone ().attr ('data-list-template', 1)
+        let tmp = me.clone ().removeAttr ('data-list'), list = $([])
 
-        var list = $([]).add (tmp)
+        if (head.tagName == 'TEMPLATE') {
 
-        for (var i = 0; i < v.length; i ++) list = list.add (fill (tmp, v [i]).attr ('data-list-item', 1).removeAttr ('data-list').removeAttr ('data-list-template'))
+	        list = list.add (tmp)
+
+        	tmp = $(head.content).children ()
+
+        }
+        else {
+
+	        list = list.add ($('<template />').attr ('data-list', n).append (tmp.removeAttr ('data-list')))
+
+        }
+
+        if (v && $.isArray (v)) for (var i = 0; i < v.length; i ++) 
+
+       		list = list.add (fill (tmp, v [i]).attr ('data-list-item', 1))
 
         me.replaceWith (list)
 
@@ -922,7 +930,7 @@ function fill (jq, data, target) {
         $('input:radio', jq).not (':checked').parent ().remove ()
         $('input:radio', jq).remove ()
     }
-
+        
     jq.data ('data', data)
 
     if (target) target.empty ().append (jq)
@@ -1483,7 +1491,7 @@ function FormValues (o, jq) {
         
         if (title) title = title.replace (/\s+/gm, ' ').trim ()
 
-		if (type != 'hidden' && !$this.is (":visible") && $this.closest ('*[data-list-template]').length == 0) inactual [name] = 1
+		if (type != 'hidden' && !$this.is (":visible")) inactual [name] = 1
 		
 		if (v == null) {
 
