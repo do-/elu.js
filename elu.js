@@ -695,9 +695,9 @@ async function to_fill (name, data, target) {
 
 function fill (jq, data, target) {
 
-    jq = jq.clone ()
-
     let head = jq.get (0); if (head.tagName == 'TEMPLATE') jq = $(head.content).children ()
+    
+    jq = jq.clone ()
 
     if (data.fake == -1) jq.attr ('data-deleted', 1)
 
@@ -786,26 +786,13 @@ function fill (jq, data, target) {
 
     eachAttr (jq, 'data-list', data, function (me, n, v) {
 
-        let tmp = me.clone ().removeAttr ('data-list'), list = $([])
+        let el = me.get (0), inner = $(el.tagName == 'TEMPLATE' ? me.html () : el.outerHTML).removeAttr ('data-list')
 
-        if (head.tagName == 'TEMPLATE') {
+        let $list = $([]).add ($('<template />').attr ('data-list', n).append (inner))
 
-	        list = list.add (tmp)
+        if (v) for (let i of v) $list = $list.add (fill (inner, i).attr ('data-list-item', 1))
 
-        	tmp = $(head.content).children ()
-
-        }
-        else {
-
-	        list = list.add ($('<template />').attr ('data-list', n).append (tmp.removeAttr ('data-list')))
-
-        }
-
-        if (v && $.isArray (v)) for (var i = 0; i < v.length; i ++) 
-
-       		list = list.add (fill (tmp, v [i]).attr ('data-list-item', 1))
-
-        me.replaceWith (list)
+        me.replaceWith ($list)
 
     })
 
