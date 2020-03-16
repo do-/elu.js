@@ -555,8 +555,14 @@ $_DO.apologize = function (o, fail) {
 
             }
             else {
+                
+				if (fail) {
 
-                if (fail) return fail (o)
+					for (let t of fail.todo) t (o, fail)
+
+					if (fail.break) return
+
+				}                
 
                 alert ('Не удалось получить ответ от сервера.' + (
 
@@ -593,7 +599,7 @@ function jerk (tia, data, then) {
 async function response (tia, data) {
 
     return new Promise (function (resolve, reject) {    
-        query (tia, data, resolve, reject)
+        query (tia, data, resolve, {todo: [reject]})
     })
 
 }
