@@ -593,8 +593,8 @@ function jerk (tia, data, then) {
 async function response (tia, data) {
 
     return new Promise (function (resolve, reject) {    
-        query (tia, data, resolve, {todo: [reject]})
-    })        
+        query (tia, data, resolve, reject)
+    })
 
 }
 
