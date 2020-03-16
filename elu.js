@@ -478,12 +478,14 @@ function download (tia, data, o) {
     .fail (function (jqXHR, e) {
 
         if (jqXHR.status == 401) {
-            localStorage.removeItem ('user')
-            sessionStorage.removeItem ('user')
-            $_USER = undefined
+        
+        	$_SESSION.end ()
             location.reload ()
+            
         } else {
+        
             alert ('Загрузить файл не удалось. ' + (e == 'error' ? 'На сервере произошла ошибка' : 'Похоже, сервер оказался недоступен.'))
+            
         }
 
     })
@@ -531,10 +533,8 @@ $_DO.apologize = function (o, fail) {
         var e = o.error
 
         if (jqXHR.status == 401) {
-            localStorage.removeItem ('user')
-            sessionStorage.removeItem ('user')
-            $_USER = undefined
-            location.reload ()
+			$_SESSION.end ()
+			location.reload ()
         }
         else if (jqXHR.status == 403) {
             alert ('Доступ запрещён')
