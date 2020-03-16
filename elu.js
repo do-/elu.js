@@ -305,8 +305,23 @@ use.text = async function (path) {
 
 use.html = async function (name) {
 
-    return use.text (`html/${name}.html`)
-    
+	let html = '', id = `html/${name}.html`, tmp = document.getElementById (id)
+
+	if (tmp) {
+	
+		for (let n of tmp.content.childNodes.values ()) html += n.outerHTML || n.wholeText 
+		
+	}
+	else {
+
+		html = await use.text (id)
+
+		$(`<template id="${id}">${html}</template>`).appendTo ($(document.head))
+
+	}
+
+    return html
+
 }
 
 use.jq = async function (name) {
