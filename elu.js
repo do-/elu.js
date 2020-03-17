@@ -314,7 +314,19 @@ use.html = async function (name) {
 	}
 	else {
 
-		html = await use.text (id)
+		html = (await use.text (id))
+		
+		.replace (/<([a-z]+)(.*?)\/>/gm, (m, tag, attr) => {
+
+			switch (tag.toUpperCase ()) {
+				case 'DIV':
+				case 'SPAN':
+					return `<${tag}${attr}></${tag}>`
+				default:
+					return m
+			}
+
+		})
 
 		$(`<template id="${id}">${html}</template>`).appendTo ($(document.head))
 
