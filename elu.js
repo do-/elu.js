@@ -827,7 +827,7 @@ function fill (jq, data, target) {
 
         let $list = $([]).add ($(`<template data-list=${n}>${html}</template>`))
 
-        if (v) for (let i of v) $list = $list.add (fill (tmp, i).attr ('data-list-item', 1))
+        if (v) for (let i of v) $list = $list.add (fill (tmp, {...data, ...i}).attr ('data-list-item', 1))
 
         me.replaceWith ($list)
 
