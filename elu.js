@@ -1762,6 +1762,10 @@ function values (jq) {
         $_REQUEST._secret.push (this.name)
     })
 
+    $('input[type=tel]', jq).each (function () {
+        o[this.name] = or_null (($(this).val () || '').replace (/\D/g, ''))
+    })
+
     $('select', jq).each (function () {
         o[this.name] = or_null ($(this).val ())
     })
