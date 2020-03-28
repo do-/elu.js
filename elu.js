@@ -853,7 +853,7 @@ function fill (jq, data, target) {
     
     let _fields = data._fields; if (_fields) {
 
-		$('input:text, input[type=date], input:password, textarea', jq).each (function () {
+		$('input:text, input[type=date], input[type=tel], input:password, textarea', jq).each (function () {
 			
 			let f = _fields [this.name]; 
 
