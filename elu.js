@@ -1515,7 +1515,7 @@ function FormValues (o, jq) {
         
         if (title) title = title.replace (/\s+/gm, ' ').trim ()
 
-		if (type != 'hidden' && !$this.is (":visible")) inactual [name] = 1
+		if (!$this.is (":visible") && type != 'hidden' && !$this.is ("[data-hidden]")) inactual [name] = 1
 		
 		if (v == null) {
 
