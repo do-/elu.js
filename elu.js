@@ -1350,7 +1350,7 @@ var Base64file = {
 
             }, 10)
 
-        })
+        }, o.onloadfail)
 
     }
 
