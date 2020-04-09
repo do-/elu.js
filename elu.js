@@ -1575,11 +1575,19 @@ function FormValues (o, jq) {
 			
 			}
 
-			let pattern = $this.attr ('pattern')
-			if (pattern && !(new RegExp (pattern)).test (v)) err.push ({name, title, error: 'pattern', pattern})
+			let pattern = $this.attr ('pattern'); if (pattern) {
+
+				if (!(new RegExp (pattern)).test (v)) err.push ({name, title, error: 'pattern', pattern})
+
+			}
+			else if (type == 'email') {
+
+				if ($this.is (':invalid')) err.push ({name, title, error: 'pattern'})
+
+			}
 
 		}
-				
+
 	})
 
 	if (err.length > 0) this._validation_errors = err
