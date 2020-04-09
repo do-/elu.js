@@ -1409,6 +1409,7 @@ function __d (data) {
 function die (name, text) {
     alert (text)
     $('[name=' + name + ']').first ().focus ()
+    delete $_REQUEST._secret
     throw 'core.ok.validation'
 }
 
