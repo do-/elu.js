@@ -839,13 +839,15 @@ function fill (jq, data, target) {
     	let o = this.options; if (!o.length) return    	
     	let o0 = o [0]; if (o0.value == o0.label) o0.value = ''
     })    
-    
+
     $(textInputs, jq).each (function () {     
     	if (!this.name) return    	
-    	let v = data [this.name]    	
-		$(this).val (v == null ? '' : v)
+    	let v = data [this.name]
+    	if (v == null) v = ''
+		if (this.type == 'date' && v.length > 10) v = v.slice (0, 10)
+		$(this).val (v)
     })
-    
+
     $('progress', jq).each (function () {
     	let name = $(this).attr ('name')
     	if (name in data) $(this).attr ('value', data [name])
