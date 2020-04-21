@@ -1580,6 +1580,8 @@ function FormValues (o, jq) {
 
 			let pattern = $this.attr ('pattern'); if (pattern) {
 
+				if (type == 'tel') pattern = '^7[0-9]{10}$'
+
 				if (!(new RegExp (pattern)).test (v)) err.push ({name, title, error: 'pattern', pattern})
 
 			}
