@@ -1781,8 +1781,10 @@ function values (jq) {
     $('select', jq).each (function () {
         o[this.name] = or_null ($(this).val ())
     })
-    
-    let cb = {}
+
+    $('input[type=checkbox]', jq).each (function () {
+    	delete o [this.name]
+    })
 
     $('input[type=checkbox]', jq).each (function () {
     
@@ -1794,7 +1796,7 @@ function values (jq) {
     	
     	if (!$this.is ('[value]')) return o [name] = checked
     	
-   		if (!cb.name) cb.name = o [name] = []
+   		if (!o [name]) o [name] = []
 
    		if (checked) o [name].push (this.value)
 
