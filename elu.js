@@ -1332,7 +1332,7 @@ var Base64file = {
 
                     }
 
-                })
+                }, o.onloadfail)
 
             }, false)
 
