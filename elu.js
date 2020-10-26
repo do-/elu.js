@@ -899,6 +899,7 @@ function fill (jq, data, target) {
 			set ('maxlength', maxlength)
 			set ('minlength', f.MIN_LENGTH)
 			set ('pattern', f.PATTERN)
+			set ('patternflags', f.PATTERN_FLAGS)
 			set ('min', f.MIN)
 			set ('max', f.MAX)
 		
@@ -1581,7 +1582,9 @@ function FormValues (o, jq) {
 
 			let pattern = $this.attr ('pattern'); if (pattern) {
 
-				if (!(new RegExp (pattern)).test (v)) err.push ({name, title, error: 'pattern', pattern})
+                let pattern_flags = $this.attr ('patternflags') || ''
+
+				if (!(new RegExp (pattern, pattern_flags)).test (v)) err.push ({name, title, error: 'pattern', pattern})
 
 			}
 			else if (type == 'email') {
