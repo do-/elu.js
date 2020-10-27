@@ -893,12 +893,14 @@ function fill (jq, data, target) {
 			}
 
 			function set (k, v) {if (v != null && $this.attr (k) == null) $this.attr (k, v)}
-			
+			function set_data (k, v) {if (v != null && $this.data (k) == null) $this.data (k, v)}
+
 			if (f.MAX == 'NOW') f.MAX = (new Date ()).toJSON ().slice (0, 10)
 			
 			set ('maxlength', maxlength)
 			set ('minlength', f.MIN_LENGTH)
 			set ('pattern', f.PATTERN)
+			set_data ('patternflags', f.PATTERNFLAGS)
 			set ('min', f.MIN)
 			set ('max', f.MAX)
 		
@@ -1581,7 +1583,9 @@ function FormValues (o, jq) {
 
 			let pattern = $this.attr ('pattern'); if (pattern) {
 
-				if (!(new RegExp (pattern)).test (v)) err.push ({name, title, error: 'pattern', pattern})
+				let patternflags = $this.data ('patternflags') || ''
+
+				if (!(new RegExp (pattern, patternflags)).test (v)) err.push ({ name, title, error: 'pattern', pattern })
 
 			}
 			else if (type == 'email') {
