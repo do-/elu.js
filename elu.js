@@ -219,7 +219,13 @@ var $_SESSION = {
 }
 
 function clone (o) {
+
+	if (o == null) return null
+
+	if (typeof o != 'object') return o
+
     return JSON.parse (JSON.stringify (o))
+
 }
 
 var $_USER = $_LOCAL.get ('user')
