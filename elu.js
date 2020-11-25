@@ -40,6 +40,12 @@
 
     })
 
+    var _show = $.fn.show; $.fn.show = function () {
+        _show.apply (this, arguments)
+        let display = get_display (this)
+        this.css ('display', display)
+    }
+
 })(window.jQuery);
 
 // elu.js
@@ -54,6 +60,14 @@ function darn (o) {
 function redirect (url) {
     window.location.href = url
     throw 'core.ok.redirect'
+}
+
+function get_display ($el) {
+    switch ($el.prop ('tagName')) {
+        case 'TD': return 'table-cell'
+        case 'TR': return 'table-row'
+        default: return $el.css ('display')
+    }
 }
 
 var $_LOCAL = {
