@@ -42,7 +42,7 @@
 
     var _show = $.fn.show; $.fn.show = function () {
         _show.apply (this, arguments)
-        let display = get_display (this.prop ('tagName'))
+        let display = get_display (this)
         this.css ('display', display)
     }
 
@@ -62,11 +62,11 @@ function redirect (url) {
     throw 'core.ok.redirect'
 }
 
-function get_display (tag) {
-    switch (tag) {
+function get_display ($el) {
+    switch ($el.prop ('tagName')) {
         case 'TD': return 'table-cell'
         case 'TR': return 'table-row'
-        default: return 'block'
+        default: return $el.css ('display')
     }
 }
 
