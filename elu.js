@@ -41,9 +41,10 @@
     })
 
     var _show = $.fn.show; $.fn.show = function () {
-        _show.apply (this, arguments)
+        let result = _show.apply (this, arguments)
         let display = get_display (this)
         this.css ('display', display)
+        return result
     }
 
 })(window.jQuery);
