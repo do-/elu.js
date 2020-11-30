@@ -749,7 +749,7 @@ async function to_fill (name, data, target) {
 
 function fill (jq, data, target) {
 
-    let head = jq.get (0); if (head.tagName == 'TEMPLATE') jq = $(head.content).children ()
+    let head = jq.get (0); if (head && head.tagName == 'TEMPLATE') jq = $(head.content).children ()
     
     jq = jq.clone ()
 
