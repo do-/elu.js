@@ -1521,6 +1521,8 @@ function FormValues (o, jq) {
         	$this.data ('datepicker') ? 'date' :
         	field ? field.type : 
         	this.type
+        	
+        if (type == 'hidden') return
 
         let title = ''
         
