@@ -1310,6 +1310,10 @@ var Base64file = {
     },
 
     upload: function (file, o) {
+    
+    	if (file == null) {throw new Error ('Empty file object')}
+
+    	if (!(file instanceof File)) {darn ({file}); throw new Error ('Invalid file object')}
 
         if (!o.portion) o.portion = 128 * 1024
         if (file.size % (o.portion + 1) == 0) o.portion += 4096
