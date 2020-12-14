@@ -1327,6 +1327,7 @@ var Base64file = {
         data.label = file.name
         data.type  = file.type
         data.size  = file.size
+        data.ts_last_modified = new Date (file.lastModified).toLocalISOString ()
 
         query ({type: o.type, action: o.action.create, id: undefined}, {file: data}, function (data) {
 
