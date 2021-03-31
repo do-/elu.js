@@ -916,6 +916,7 @@ function fill (jq, data, target) {
 			function set (k, v) {if (v != null && $this.attr (k) == null) $this.attr (k, v)}
 			function set_data (k, v) {if (v != null && $this.data (k) == null) $this.data (k, v)}
 
+			if (f.MIN == 'NOW') f.MIN = (new Date ()).toJSON ().slice (0, 10)
 			if (f.MAX == 'NOW') f.MAX = (new Date ()).toJSON ().slice (0, 10)
 			
 			set ('maxlength', maxlength)
