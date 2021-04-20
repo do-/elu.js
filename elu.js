@@ -1550,7 +1550,15 @@ function FormValues (o, jq) {
         
         if (title) title = title.replace (/\s+/gm, ' ').trim ()
 
-		if (!$this.is (":visible") && type != 'hidden' && !$this.is ("[data-hidden]")) inactual [name] = 1
+        if (
+            !$this.is (":visible") && type != 'hidden' &&
+            !(
+                $this.is ("[data-hidden]") && (
+                    !$('label[for="' + name + '"]').length || $('label[for="' + name + '"]:visible').length
+                )
+           )
+        ) inactual [name] = 1
+
 		
 		if (v == null) {
 
