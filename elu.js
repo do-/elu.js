@@ -1926,4 +1926,8 @@ Date.prototype.toLocalISOString = function () {
 
 }
 
+function is_uuid (s) {
+	return /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i.test (s)
+}
+
 1;
