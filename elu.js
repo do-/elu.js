@@ -1329,7 +1329,7 @@ var Base64file = {
         var data = o.data ? o.data : {}
 
         if (!o.name_field) o.name_field = 'label'
-	data[o.name_field] = file.name
+        data[o.name_field] = file.name
         data.type  = file.type
         data.size  = file.size
         data.ts_last_modified = new Date (file.lastModified).toLocalISOString ()
