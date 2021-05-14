@@ -975,6 +975,7 @@ function fill (jq, data, target) {
             var me = $(this)
             var val = me.val()
             if (this.tagName == 'SELECT') val = $('option[value="' + val + '"]', me).text()
+            if (this.type == 'date' && v.length > 10) v = v.slice (0, 10)
             me.replaceWith ($('<span />').text (val))
         })
 
