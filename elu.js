@@ -975,12 +975,14 @@ function fill (jq, data, target) {
             var me = $(this)
             var val = me.val()
             if (this.tagName == 'SELECT') val = $('option[value="' + val + '"]', me).text()
-            if (this.type == 'date' && v.length > 10) v = v.slice (0, 10)
+            if (this.type == 'date') val = dt_dmyhms (val)
             me.replaceWith ($('<span />').text (val))
         })
 
         $('input:radio', jq).not (':checked').parent ().remove ()
         $('input:radio', jq).remove ()
+
+        $('input:checkbox', jq).attr ('disabled', true)
     }
         
     jq.data ('data', data)
