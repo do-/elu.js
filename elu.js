@@ -975,11 +975,14 @@ function fill (jq, data, target) {
             var me = $(this)
             var val = me.val()
             if (this.tagName == 'SELECT') val = $('option[value="' + val + '"]', me).text()
+            if (this.type == 'date') val = dt_dmyhms (val)
             me.replaceWith ($('<span />').text (val))
         })
 
         $('input:radio', jq).not (':checked').parent ().remove ()
         $('input:radio', jq).remove ()
+
+        $('input:checkbox', jq).attr ('disabled', true)
     }
         
     jq.data ('data', data)
@@ -1551,7 +1554,15 @@ function FormValues (o, jq) {
         
         if (title) title = title.replace (/\s+/gm, ' ').trim ()
 
-		if (!$this.is (":visible") && type != 'hidden' && !$this.is ("[data-hidden]")) inactual [name] = 1
+        if (
+            !$this.is (":visible") && type != 'hidden' &&
+            !(
+                $this.is ("[data-hidden]") && (
+                    !$('label[for="' + name + '"]').length || $('label[for="' + name + '"]:visible').length
+                )
+           )
+        ) inactual [name] = 1
+
 		
 		if (v == null) {
 
@@ -1917,6 +1928,10 @@ Date.prototype.toLocalISOString = function () {
     
     return s
 
+}
+
+function is_uuid (s) {
+	return /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i.test (s)
 }
 
 1;
