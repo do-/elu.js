@@ -988,21 +988,56 @@ function fill__form_fields_check_read_only (jq, data) {
 
     if (!data || !data._read_only || data._read_only == 0) return
 
-    $('input:text, input[type=hidden], input[type=date], input[type=number], input[type=range], input[type=email], input[type=tel], input[type=money], input:password, textarea, select', jq).each (function () {
-        if (this.type == 'hidden') return
-        var me = $(this)
-        var val = me.val()
-        if (this.tagName == 'SELECT') val = $('option[value="' + val + '"]', me).text()
-        if (this.type == 'date') val = dt_dmyhms (val)
-        me.replaceWith ($('<span />').text (val))
-    })
+    $('input, textarea, select', jq).each (set_read_only_for_form_field)
 
-    $('input:radio', jq).not (':checked').parent ().remove ()
-    $('input:radio', jq).remove ()
-
-    $('input:checkbox', jq).attr ('disabled', true)
+    return
 
 }
+
+function set_read_only_for_form_field () {
+
+    let val = $(this).val()
+
+    switch (this.type) {
+        case 'hidden':
+            return
+            break
+
+        case 'text':
+        case 'textarea':
+        case 'number':
+        case 'range':
+        case 'email':
+        case 'tel':
+        case 'money':
+        case 'password':
+            $(this).replaceWith ($('<span />').text (val))
+            break
+
+        case 'date':
+            val = dt_dmyhms (val)
+            $(this).replaceWith ($('<span />').text (val))
+            break
+
+        case 'select':
+        case 'select-one':
+        case 'select-multiple':
+            val = $('option[value="' + val + '"]', $(this)).text()
+            $(this).replaceWith ($('<span />').text (val))
+            break
+
+        case 'checkbox':
+            $(this).attr ('disabled', true)
+            break
+
+        case 'radio':
+            $(this).not (':checked').parent ().remove ()
+            $(this).remove ()
+            break
+    }
+
+}
+
 
 function click (a) {
     var e = window.document.createEvent ("MouseEvents");
