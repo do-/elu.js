@@ -823,8 +823,6 @@ function fill (jq, data, target) {
 
     clickOn ($('span.anchor', jq), onDataUriDblClick)
 
-    var textInputs = 'input:text, input[type=hidden], input[type=date], input[type=number], input[type=range], input[type=email], input[type=tel], input[type=money], input:password, textarea, select'
-
     if (data._can) {
         $('button[name]', jq).each (function () {
             if (!data._can [this.name]) $(this).remove ()
@@ -855,6 +853,19 @@ function fill (jq, data, target) {
 
     })
 
+    fill__form_fields (jq, data)
+
+    jq.data ('data', data)
+
+    if (target) target.empty ().append (jq)
+
+    return jq
+
+}
+
+
+function fill__form_fields (jq, data) {
+
     $('input[required]:not([placeholder])', jq).each (function () {$(this).attr ('placeholder', ' ')})
     
     $('select', jq).each (function () {     
@@ -862,7 +873,7 @@ function fill (jq, data, target) {
     	let o0 = o [0]; if (o0.value == o0.label) o0.value = ''
     })    
 
-    $(textInputs, jq).each (function () {     
+    $('input:text, input[type=hidden], input[type=date], input[type=number], input[type=range], input[type=email], input[type=tel], input[type=money], input:password, textarea, select', jq).each (function () {
     	if (!this.name) return    	
     	let v = data [this.name]
     	if (v == null) v = ''
@@ -968,28 +979,28 @@ function fill (jq, data, target) {
     	
     })
 
-    if (data._read_only) {
+    fill__form_fields_check_read_only (jq, data)
 
-        $(textInputs, jq).each (function () {
-            if (this.type == 'hidden') return
-            var me = $(this)
-            var val = me.val()
-            if (this.tagName == 'SELECT') val = $('option[value="' + val + '"]', me).text()
-            if (this.type == 'date') val = dt_dmyhms (val)
-            me.replaceWith ($('<span />').text (val))
-        })
+    return
+}
 
-        $('input:radio', jq).not (':checked').parent ().remove ()
-        $('input:radio', jq).remove ()
+function fill__form_fields_check_read_only (jq, data) {
 
-        $('input:checkbox', jq).attr ('disabled', true)
-    }
-        
-    jq.data ('data', data)
+    if (!data || !data._read_only || data._read_only == 0) return
 
-    if (target) target.empty ().append (jq)
+    $('input:text, input[type=hidden], input[type=date], input[type=number], input[type=range], input[type=email], input[type=tel], input[type=money], input:password, textarea, select', jq).each (function () {
+        if (this.type == 'hidden') return
+        var me = $(this)
+        var val = me.val()
+        if (this.tagName == 'SELECT') val = $('option[value="' + val + '"]', me).text()
+        if (this.type == 'date') val = dt_dmyhms (val)
+        me.replaceWith ($('<span />').text (val))
+    })
 
-    return jq
+    $('input:radio', jq).not (':checked').parent ().remove ()
+    $('input:radio', jq).remove ()
+
+    $('input:checkbox', jq).attr ('disabled', true)
 
 }
 
