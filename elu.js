@@ -989,6 +989,7 @@ function fill__form_fields_check_read_only (jq, data) {
     if (!data || !data._read_only || data._read_only == 0) return
 
     $('input:text, input[type=hidden], input[type=date], input[type=number], input[type=range], input[type=email], input[type=tel], input[type=money], input:password, textarea, select', jq).each (function () {
+        if ($(this).closest('.toolbar').length != 0) return
         if (this.type == 'hidden') return
         var me = $(this)
         var val = me.val()
