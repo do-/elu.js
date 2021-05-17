@@ -988,20 +988,19 @@ function fill__form_fields_check_read_only (jq, data) {
 
     if (!data || !data._read_only || data._read_only == 0) return
 
-    $('input, textarea, select', jq).each (set_read_only_for_form_field)
+    $('input, textarea, select', jq).each (fill__form_fields_check_read_only_field)
 
     return
 
 }
 
-function set_read_only_for_form_field () {
+function fill__form_fields_check_read_only_field () {
 
     let val = $(this).val()
 
     switch (this.type) {
         case 'hidden':
             return
-            break
 
         case 'text':
         case 'textarea':
