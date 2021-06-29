@@ -873,7 +873,7 @@ function fill__form_fields (jq, data) {
     	let o0 = o [0]; if (o0.value == o0.label) o0.value = ''
     })    
 
-    $('input:text, input[type=hidden], input[type=date], input[type=number], input[type=range], input[type=email], input[type=tel], input[type=money], input:password, textarea, select', jq).each (function () {
+    $('input:text, input[type=hidden], input[type=date], input[type=datetime], input[type=number], input[type=range], input[type=email], input[type=tel], input[type=money], input:password, textarea, select', jq).each (function () {
     	if (!this.name) return    	
     	let v = data [this.name]
     	if (v == null) v = ''
@@ -888,7 +888,7 @@ function fill__form_fields (jq, data) {
     
     let _fields = data._fields; if (_fields) {
 
-		$('input:text, input[type=number], input[type=date], input[type=tel], input:password, textarea', jq).each (function () {
+		$('input:text, input[type=number], input[type=date], input[type=datetime], input[type=tel], input:password, textarea', jq).each (function () {
 			
 			let f = _fields [this.name]; 
 
@@ -902,6 +902,9 @@ function fill__form_fields (jq, data) {
 
 				if (/^date$/i.test (type)) {
 					$this.attr ('type', 'date')
+				}
+				else if (/time/i.test (type)) {
+					$this.attr ('type', 'datetime')
 				}
 				else if (/^(int|num|dec)/.test (type.toLowerCase ())) {
 					$this.attr ('type', 'number')
@@ -1014,6 +1017,7 @@ function fill__form_fields_check_read_only_field () {
             break
 
         case 'date':
+        case 'datetime':
             val = dt_dmyhms (val)
             $(this).replaceWith ($('<span />').text (val))
             break
@@ -1573,6 +1577,7 @@ function FormValues (o, jq) {
 
         let field = fields [name]
         let type = 
+        	$this.data ('timepicker') ? 'datetime' :
         	$this.data ('datepicker') ? 'date' :
         	field ? field.type : 
         	this.type
@@ -1634,6 +1639,26 @@ function FormValues (o, jq) {
 			
 			}) ()
 
+			if (type == 'datetime' && !/^\d{4}-\d{2}-\d{2} \d{2}:\d{2}$/.test (v)) me [name] = v = (() => {
+
+				let croak = () => {err.push ({name, title, error: 'pattern_datetime'}); return v}
+
+				let ymdhm = v.split (/\D/); if (ymdhm.length != 5) return croak ()
+
+				let ymd = ymdhm.slice(0, 3)
+
+				switch (ymd.map (s => s.length).reduce ((s, n) => n + 10 * s, 0)) {
+
+					case 224: ymd.reverse ()
+
+					case 422: return ymd.join ('-') + ' ' + ymdhm [3] + ':' + ymdhm [4] + ':00'
+
+					default:  return croak ()
+
+				}
+
+			}) ()
+
 			let maxlength = $this.attr ('maxlength') 
 			if (maxlength && v.length > maxlength) err.push ({name, title, error: 'maxlength', maxlength})
 
@@ -1656,6 +1681,13 @@ function FormValues (o, jq) {
 
 					if (max && v > max) err.push ({name, title, error: 'max', type: 'date', max})
 				
+				}
+				else if (/^\d{4}\-\d{2}\-\d{2} \d{2}:\d{2}$/.test (mm)) {
+
+					if (min && v.slice (0, 10) < min) err.push ({name, title, error: 'min', type: 'date', min})
+
+					if (max && v.slice (0, 10) > max) err.push ({name, title, error: 'max', type: 'date', max})
+
 				}
 				else if (!isNaN (mm)) {
 
@@ -1763,6 +1795,14 @@ $_DO.outspeak = {
 
 	},
 	
+	pattern_datetime: (e) => {
+
+		if (e.title) return `Некорректный формат даты и времени в поле ${e.title}`
+
+		return "Некорректный формат даты и времени"
+
+	},
+
 	min_date: (e) => {
 	
 		if (e.title) return `${e.title} не может быть ранее ${dt_dmy (e.min)}`
