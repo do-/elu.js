@@ -67,6 +67,7 @@ function get_display ($el) {
     switch ($el.prop ('tagName')) {
         case 'TD': return 'table-cell'
         case 'TR': return 'table-row'
+        case 'SPAN': return 'inline'
         default: return $el.css ('display')
     }
 }
