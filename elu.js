@@ -975,7 +975,7 @@ function fill__form_fields (jq, data) {
     	
     	$this.prop ('checked', $this.is ('[value]') ? 
     	
-    		v && Array.isArray (v) && v.contains (this.value) : 
+    		v && Array.isArray (v) && v.includes (this.value) : 
 
     		v == 1
     	
