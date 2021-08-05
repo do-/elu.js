@@ -1408,7 +1408,7 @@ var Base64file = {
 
                     if (o.onprogress) o.onprogress (start - 1, file.size)
 
-                    if (start > file.size) {
+                    if (start >= file.size) {
 
                         clearInterval (timer)
 
