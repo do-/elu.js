@@ -1164,6 +1164,14 @@ String.prototype.saveAs = function (name, type) {
 
 }
 
+String.prototype.lc_first = function () {
+
+	if (this.length == 0) return this
+	
+	return this [0].toLowerCase () + this.slice (1)
+
+}
+
 function xmlDoc (data, name) {
 
     if (!name) name = 'data'
