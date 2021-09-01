@@ -802,6 +802,8 @@ function fill (jq, data, target) {
         me.text (v)
 
     })
+    
+    let is_nz = v => v && v !== '0'
 
     eachAttr (jq, 'data-html',   data, function (me, n, v) {me.html (v)})
     eachAttr (jq, 'data-id-field', data, function (me, n, v) {me.attr ('data-id', v)})
@@ -812,8 +814,8 @@ function fill (jq, data, target) {
     eachAttr (jq, 'data-value',  data, function (me, n, v) {me.val (v)})
     eachAttr (jq, 'data-class',  data, function (me, n, v) {me.addClass (v)})
     eachAttr (jq, 'data-key',    data, function (me, n, v) {me.text (me.text () + ' (' + n + ')'); me.attr ('data-hotkey', n)})
-    eachAttr (jq, 'data-off',    data, function (me, n, v) {if ( v && v !== '0') me.hide (); else me.show ()})
-    eachAttr (jq, 'data-on',     data, function (me, n, v) {if (!v || v === '0') me.hide (); else me.show ()})
+    eachAttr (jq, 'data-off',    data, function (me, n, v) {if ( is_nz (v)) me.hide (); else me.show ()})
+    eachAttr (jq, 'data-on',     data, function (me, n, v) {if (!is_nz (v)) me.hide (); else me.show ()})
     eachAttr (jq, 'data-roles',  data, function (me, n, v) {if (n.split (/\W/).indexOf ($_USER.role) < 0) me.remove ()})
     eachAttr (jq, 'data-uri',    data, function (me, n, v) {
         if (!v) return
@@ -821,6 +823,9 @@ function fill (jq, data, target) {
         me.attr ('data-href', v).find (leaves).addBack (leaves).wrapInner ('<span class="anchor"/>')
     })
     eachAttr (jq, 'data-img',    data, function (me, n, v) {me.css ({'background-image': 'url(data:' + v + ')'}); me.attr ('data-image', n)})
+
+    eachAttr (jq, 'data-disabled-on',  data, function (me, n, v) {me.prop ({disabled:  is_nz (v)})})
+    eachAttr (jq, 'data-disabled-off', data, function (me, n, v) {me.prop ({disabled: !is_nz (v)})})
 
     clickOn ($('span.anchor', jq), onDataUriDblClick)
 
