@@ -861,7 +861,7 @@ function fill (jq, data, target) {
 
     fill__form_fields (jq, data)
 
-    jq.data ('data', data)
+    if(jq [0].tagName != 'OPTION') jq.data ('data', data)
 
     if (target) target.empty ().append (jq)
 
