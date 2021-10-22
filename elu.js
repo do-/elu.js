@@ -527,8 +527,8 @@ function download (tia, data, o) {
     .fail (function (jqXHR, e) {
 
         if (jqXHR.status == 401) {
-        
-        	$_SESSION.end ()
+            if (jqXHR.responseText) alert (jqXHR.responseText)
+            $_SESSION.end ()
             location.reload ()
             
         } else {
@@ -582,8 +582,9 @@ $_DO.apologize = function (o, fail) {
         var e = o.error
 
         if (jqXHR.status == 401) {
-			$_SESSION.end ()
-			location.reload ()
+            if (jqXHR.responseText) alert (jqXHR.responseText)
+            $_SESSION.end ()
+            location.reload ()
         }
         else if (jqXHR.status == 403) {
             alert ('Доступ запрещён')
