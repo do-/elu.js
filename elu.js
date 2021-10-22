@@ -592,6 +592,10 @@ $_DO.apologize = function (o, fail) {
         else if (jqXHR.status == 413) {
             alert ('Вы пытаетесь передать слишком большой объём данных: вероятно, файл недопустимой величины')
         }
+        else if (jqXHR.status == 422 && jqXHR.responseText) {
+            var message = JSON.parse (jqXHR.responseText).message
+            alert (message)
+        }
         else if (jqXHR.status == 504) {
             location.href = '/_maintenance/'
         }
