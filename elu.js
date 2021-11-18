@@ -338,7 +338,7 @@ use.html = async function (name) {
 
 		html = (await use.text (id))
 		
-		.replace (/<([a-z]+)(.*?)\/>/gm, (m, tag, attr) => {
+		.replace (/<([a-z]+)([^<]*?)\/>/gm, (m, tag, attr) => {
 
 			switch (tag.toUpperCase ()) {
 				case 'DIV':
