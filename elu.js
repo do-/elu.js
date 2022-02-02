@@ -832,6 +832,10 @@ function fill (jq, data, target) {
     eachAttr (jq, 'data-disabled-on',  data, function (me, n, v) {me.prop ({disabled:  is_nz (v)})})
     eachAttr (jq, 'data-disabled-off', data, function (me, n, v) {me.prop ({disabled: !is_nz (v)})})
 
+    eachAttr (jq, 'data-required-on', data, function (me, n, v) {me.prop ({required: is_nz (v)})})
+    eachAttr (jq, 'data-required-off', data, function (me, n, v) {me.prop ({required: !is_nz (v)})})
+
+
     clickOn ($('span.anchor', jq), onDataUriDblClick)
 
     if (data._can) {
