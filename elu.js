@@ -1434,7 +1434,7 @@ var Base64file = {
 
                         clearInterval (timer)
 
-                        if (o.onloadend) o.onloadend (id)
+                        if (o.onloadend) o.onloadend (o.want_obj ? data : id)
 
                     }
 
