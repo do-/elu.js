@@ -834,6 +834,7 @@ function fill (jq, data, target) {
 
     eachAttr (jq, 'data-required-on', data, function (me, n, v) {me.prop ({required: is_nz (v)})})
     eachAttr (jq, 'data-required-off', data, function (me, n, v) {me.prop ({required: !is_nz (v)})})
+    eachAttr (jq, 'data-download',   data, function (me, n, v) {me.attr ('download', v)})
 
 
     clickOn ($('span.anchor', jq), onDataUriDblClick)
